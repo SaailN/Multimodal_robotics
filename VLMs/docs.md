@@ -29,6 +29,7 @@ vided bounding box coordinates.
 - Uses FiLM EfficientNetB0
 - Uses a lot of pre-collected data (130k episodes over 700 tasks, 7 skills and took 17 months to collect)
 - Does pre-training with internet data
+- Code is open source
 
 ## RT - 2
 - Robotics Transformers 2
@@ -37,3 +38,18 @@ vided bounding box coordinates.
 - Uses LLM + Visual Transformer 
 - **Pre-trained on internet corpus**, then fine tuned and co-fine tuned again
 - Same dataset as RT-1 used
+- Everything is closed source
+
+## CALVIN 
+- CALVIN (Composing Actions from Language and Vision)
+- It is a dataset of long-horizon tasks, i.e., tasks that require a long sequence of actions to execute properly
+- a single agent must solve complex manipulation tasks by understanding a series of unconstrained language expressions in a row, e.g., “open the
+drawer . . . pick up the blue block . . . push the block into the drawer . . . open the sliding door”.
+- CALVIN includes ∼24 hours teleoperated unstructured play data together with 20K language directives.
+- RGB-D images from both a static and a gripper camera, proprioceptive information, and vision-based tactile
+sensing.
+
+
+## RoboFlamingo 
+- Democratizes RT2 (overcomes closed source nature of the latter along with extensive computational power required)
+- Uses CALVIN for benchmarking
