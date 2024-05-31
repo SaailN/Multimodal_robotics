@@ -106,7 +106,13 @@ For learning the value function (giving prob. of success of the tasks possible g
 - 551 skills that span seven skill families and 17 objects, which include picking, placing and rearranging objects, opening and closing drawers, navigating to various locations, and placing objects in a specific configurations
 
 
+**Results**
+- Planning success rate of 84% and execution success rate of 74%    
 
+**Shortcomings** 
+- Biases of LLM
+- fixed set of skills
+- open loop control
 
 
 
@@ -114,5 +120,7 @@ For learning the value function (giving prob. of success of the tasks possible g
 
 ## Reinforcement Learning
 
-### Value Function Training- Gives the value of the total reward starting from time t, given the current state and action. We can train the Q Function and maximize it for a given state to get the policy function. However, it does not utilize temperature (for exploration) and is suited for discrete action space only.
-### Policy Function Training - Optimize the policy function directly - can model continuous action spaces. 
+### Value Function Training- 
+Gives the value of the total reward starting from time t, given the current state and action. We can train the Q Function and maximize it for a given state to get the policy function. However, it does not utilize temperature (for exploration) and is suited for discrete action space only.
+### Policy Function Training - 
+Optimize the policy function directly - can model continuous action spaces. 
