@@ -80,6 +80,17 @@ Shortcomings -
 Then there is content about a Markov Decision Process. 
 
 
-![alt text](image.png)
+![alt text](images/image.png)
 
-![alt text](image-1.png)
+![alt text](images/image-1.png)
+
+## SayCan 
+
+- Do as I **Can**, not as I **Say**
+- Use LLMs to get lower level abstract (step-wise) actions appropriate in the given context and feasible by the robot's action space in the current environment
+- uses prompt engineering to get actionable tasks from the LLM, which are then used for controls
+- LLM is used to output the most contextually appropriate task (out of a distribution of tasks) and the probability is multiplied with the visual information available with the robot
+
+**IMP**
+For learning the value function (giving prob. of success of the tasks possible given visual information), SayCan train individual skills (tasks) either with image-based behavorial cloning (BC-Z), or RL (MT-Opt). MDP is used
+- Regardless of how the skill policy is obtained, SayCan utilizes value functions trained via TD backups.
