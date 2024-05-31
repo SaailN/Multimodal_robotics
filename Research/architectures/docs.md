@@ -114,9 +114,21 @@ For learning the value function (giving prob. of success of the tasks possible g
 - fixed set of skills
 - open loop control
 
-
+**Future Work**
++ real world experience can be used to improve the LLM itself
++ other sources of grounding
++ other ontology rather than natural language
 
 # Appendix
+
+
+## MT-Ops (MultiTask Operations)
+
+- Teach a robot how to do multiple tasks
+- **Problems with current RL tasks** - lot of on-robot training, and engineering each task
+- Example - QT-Ops can  do vision-based object grasping, but requires over 500,00 trials collected across multiple robots
+### Will study the given architecture in more detail if our project requires multitask RL training
+![alt text](images/image.png)
 
 ## Reinforcement Learning
 
