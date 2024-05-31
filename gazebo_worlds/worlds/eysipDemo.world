@@ -1,0 +1,147 @@
+
+<sdf version="1.6">
+  <world name="default">
+	<!-- <physics type="ode">
+		<max_step_size>0.002</max_step_size>
+		<real_time_factor>1</real_time_factor>
+		<real_time_update_rate>1000</real_time_update_rate>
+		<ode>
+			<solver>
+				<iters>75</iters>
+				<island_threads>4</island_threads>
+			</solver>
+			<constraints>
+				<contact_surface_layer>0.005</contact_surface_layer>
+			</constraints>
+		</ode>
+	</physics> -->
+
+    <gui>
+      <camera name="user_default">
+        <pose>-24.307 -9.572 4.851 0 0.071 0.316</pose>
+      </camera>
+    </gui>
+    <!-- <plugin name="ros_link_attacher_plugin" filename="libgazebo_ros_link_attacher.so"/> -->
+
+    <light name="light0" type="directional">
+      <pose frame="">0 -18.818 8 0.75 -0 0</pose>
+      <diffuse>0.5 0.5 0.5 1</diffuse>
+      <specular>0.1 0.1 0.1 1</specular>
+      <direction>0.1 0.1 -0.9</direction>
+      <attenuation>
+        <range>20</range>
+        <constant>0.5</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <cast_shadows>0</cast_shadows>
+    </light>
+
+
+    <light name="light3" type="directional">
+      <pose frame="">3.9239 1.64974 4 0 1.2 0</pose>
+      <diffuse>0.5 0.5 0.5 1</diffuse>
+      <specular>0.1 0.1 0.1 1</specular>
+      <direction>0.1 0.1 -0.9</direction>
+      <attenuation>
+        <range>20</range>
+        <constant>0.5</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <cast_shadows>0</cast_shadows>
+    </light>
+
+
+    <light name="light5" type="directional">
+      <pose frame="">0.454419 12.4783 5 -0.8 0 0</pose>
+      <diffuse>0.5 0.5 0.5 1</diffuse>
+      <specular>0.1 0.1 0.1 1</specular>
+      <direction>0.1 0.1 -0.9</direction>
+      <attenuation>
+        <range>20</range>
+        <constant>0.5</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <cast_shadows>0</cast_shadows>
+    </light>
+
+    <scene>
+		<shadows>false</shadows>
+		<ambient>0.5 0.5 0.5 1.0</ambient>
+    <grid>false</grid>    
+      <sky>        
+        <time>22</time>
+        <sunrise>20</sunrise>
+        <sunset>21</sunset>
+        <clouds>
+          <humidity>0</humidity>
+          <!-- <cloud_ambient>1.0 1.0 1.0 1.0</cloud_ambient> Not working -->
+        </clouds>        
+      </sky>
+    </scene>
+
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+
+
+
+    <!-- 
+    table start
+    -->
+
+    <include>
+      <uri>model://drop_table</uri>
+      <name>drop_table1</name>
+      <pose>1.13 -2.25 0 0 -0 0.0</pose>
+	</include>
+
+    <include>
+      <uri>model://drop_table</uri>
+      <name>drop_table2</name>
+      <pose>0.58 -2.25 0 0 -0 0.0</pose>
+	</include>
+
+    <include>
+      <uri>model://drop_table</uri>
+      <name>drop_table3</name>
+      <pose>1.13 -3.23 0 0 -0 0.0</pose>
+	</include>
+
+    <include>
+      <uri>model://drop_table</uri>
+      <name>drop_table4</name>
+      <pose>0.58 -3.23 0 0 -0 0.0</pose>
+	</include>
+
+    <include>
+      <uri>model://drop_table</uri>
+      <name>drop_table5</name>
+      <pose>1.13 -1.25 0 0 -0 0.0</pose>
+	</include>
+    <include>
+      <uri>model://drop_table</uri>
+      <name>drop_table6</name>
+      <pose>0.58 -1.25 0 0 -0 0.0</pose>
+	</include>
+
+
+    <!-- 
+
+    table end
+    -->
+
+
+  <include>
+      <uri>model://arm_base</uri>
+      <name>arm_base</name>
+      <pose>1.78 -2.4 0.253 0 -0 0.0</pose>
+	</include>
+
+  <plugin name="gazebo_link_attacher" filename="libgazebo_link_attacher.so"/>
+  <plugin name="gazebo_link_ur5_attacher" filename="libgazebo_link_ur5_attacher.so"/>
+
+  </world>
+</sdf>
