@@ -48,8 +48,38 @@ drawer . . . pick up the blue block . . . push the block into the drawer . . . o
 - CALVIN includes ∼24 hours teleoperated unstructured play data together with 20K language directives.
 - RGB-D images from both a static and a gripper camera, proprioceptive information, and vision-based tactile
 sensing.
+- Contains camera captures from 2 views, action space being 7DoF of Franka Emika Panda robot
+- The benchmark contains a CALVIN environment, Dataset, and Challenge
+
+The CALVIN environment has 4 environments with 34 tasks each
+
+**CALVIN Dataset**
+- dataset is free form and the data collectors were given no prior training
+- HTC Vive used to collect data
+- unstructured by its playful nature
 
 
 ## RoboFlamingo 
 - Democratizes RT2 (overcomes closed source nature of the latter along with extensive computational power required)
-- Uses CALVIN for benchmarking
+- Uses CALVIN for training and benchmarking
+
+Different standards present for the research
++ Fine-tune
++ Ask LLM to give policies for execution    
++ Co - tuning - requires a lot of web as well as low level robotics data
+
+Shortcomings - 
++ rely on low-level skill policies
++ train a very alrge model 
++ requires a lot of data
+
+- Uses Flamingo as the backbone VLM. 
+- Adds a policy head as a differentiator
+- Fine tunes the decoder 
+
+Then there is content about a Markov Decision Process. 
+
+
+![alt text](image.png)
+
+![alt text](image-1.png)
