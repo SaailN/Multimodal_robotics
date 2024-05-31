@@ -89,8 +89,30 @@ Then there is content about a Markov Decision Process.
 - Do as I **Can**, not as I **Say**
 - Use LLMs to get lower level abstract (step-wise) actions appropriate in the given context and feasible by the robot's action space in the current environment
 - uses prompt engineering to get actionable tasks from the LLM, which are then used for controls
-- LLM is used to output the most contextually appropriate task (out of a distribution of tasks) and the probability is multiplied with the visual information available with the robot
+- LLM is used to output the most contextually ap
+- propriate task (out of a distribution of tasks) and the probability is multiplied with the visual information available with the robot
 
 **IMP**
 For learning the value function (giving prob. of success of the tasks possible given visual information), SayCan train individual skills (tasks) either with image-based behavorial cloning (BC-Z), or RL (MT-Opt). MDP is used
 - Regardless of how the skill policy is obtained, SayCan utilizes value functions trained via TD backups.
+- Multitask policies are trained, so one policy can generalize to different tasks 
+- 1 LLM is used to express which task to do, another is used to express those tasks as embeddings for training the policy
+
+**RL Methods**
+
+- Every skill has a policy function, a value function, and a language description
+- Human annotators decide the reward function
+- Used RetinaGAN to do sim-to-real transfer
+- 551 skills that span seven skill families and 17 objects, which include picking, placing and rearranging objects, opening and closing drawers, navigating to various locations, and placing objects in a specific configurations
+
+
+
+
+
+
+# Appendix
+
+## Reinforcement Learning
+
+### Value Function Training- Gives the value of the total reward starting from time t, given the current state and action. We can train the Q Function and maximize it for a given state to get the policy function. However, it does not utilize temperature (for exploration) and is suited for discrete action space only.
+### Policy Function Training - Optimize the policy function directly - can model continuous action spaces. 
