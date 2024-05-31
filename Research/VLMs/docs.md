@@ -5,7 +5,7 @@
 - Contrastive learning is the method to train a model to distinguish between similar and dissimilar things.
 - Trained on 400 million (image, text) pair.
 
-![plot](images/Picture12.png)
+![plot](images1/Picture12.png)
 
 ### Pretraining process:
 
