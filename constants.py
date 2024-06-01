@@ -1,0 +1,1 @@
+OLLAMA_URL = "http://0.0.0.0:11434/api/generate"

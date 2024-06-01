@@ -1,8 +1,9 @@
 from fastapi import FastAPI, Response, Request
 import httpx
 from contextlib import asynccontextmanager
-from request_body import ChatQuery
+from request_body import ChatQuery, InferQuery
 import json 
+from constants import * 
 
 # required for async post requests from server
 @asynccontextmanager
@@ -34,9 +35,8 @@ async def command(request: Request, query: ChatQuery):
                             Do not respond with any text, just the JSON object. My query starts now - """ + query.query,
             "stream": False,
             "format": "json"}
-    url = "http://0.0.0.0:11434/api/generate"
     requests_client = request.app.requests_client
-    response = await requests_client.post(url, json=json_obj, timeout=None)
+    response = await requests_client.post(OLLAMA_URL, json=json_obj, timeout=None)
     response = json.loads(response.json()["response"])
     return_response = {
         "response": response
@@ -45,6 +45,24 @@ async def command(request: Request, query: ChatQuery):
         content=json.dumps(return_response),
         status_code=200
     )
-    
+
+# VLM interfacing - gives inference of images(s)
+@app.post("/infer") 
+async def infer(request: Request, query: InferQuery):
+    json_obj = {
+            "model": "llava",
+            "prompt": query.query,
+            "stream": False,
+            "images": query.images}
+    requests_client = request.app.requests_client
+    response = await requests_client.post(OLLAMA_URL, json=json_obj, timeout=None)
+    response = json.loads(response.json()["response"])
+    return_response = {
+        "response": response
+    }
+    return Response(
+        content=json.dumps(return_response),
+        status_code=200
+    )
 
 

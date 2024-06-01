@@ -20,3 +20,12 @@ class ChatQuery(BaseModel):
 **Response** - 
 
 {"response": {"x": 0, "y": 0, "z": 0}}
+
+2. /infer
+
+**Request** - 
+class InferQuery(BaseModel):
+   query: str | None 
+   images : list[str] | None
+
+Images should be base64 encoded.
