@@ -11,20 +11,20 @@
 
 ### Routes:
 
-1. /command - 
+1. /command - Do LLM inference for (x,y,z) coordinates of final robot position.
 
-**Request** - 
+<!-- **Request** - 
 class ChatQuery(BaseModel):
 
    query: str | None
 
 **Response** - 
 
-{"response": {"x": 0, "y": 0, "z": 0}}
+{"response": {"x": 0, "y": 0, "z": 0}} -->
 
-2. /infer
+2. /infer - Get inference by passing in image(s)
 
-**Request** - 
+<!-- **Request** - 
 class InferQuery(BaseModel):
 
    query: str | None 
@@ -35,4 +35,4 @@ Images should be base64 encoded.
 
 **Response** 
 
-{"response" : <response>}
+{"response" : <response>} -->
