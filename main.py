@@ -4,6 +4,8 @@ from contextlib import asynccontextmanager
 from request_body import ChatQuery, InferQuery
 import json 
 from constants import * 
+import base64 
+
 
 # required for async post requests from server
 @asynccontextmanager
@@ -49,12 +51,37 @@ async def command(request: Request, query: ChatQuery):
 # VLM interfacing - gives inference of images(s)
 @app.post("/infer") 
 async def infer(request: Request, query: InferQuery):
+    requests_client = request.app.requests_client
+
+    images = [] # contains base64 of all images
+    
+    for image_url in query.images:
+        if not image_url.startswith("http"): # not a URL
+            return Response(
+                content=json.dumps({"response": "Invalid URL of image"}),
+                status_code=400
+            )
+        with httpx.stream("GET", image_url) as response:
+            if response.status_code == 200:
+                image = response.read()
+                # print("Fetched image")
+                base64_data = base64.b64encode(image)
+                base64_string = base64_data.decode('utf-8')
+                images.append(base64_string)
+            else:
+                return Response(
+                    content=json.dumps({"response": "Invalid URL of image"}),
+                    status_code=400
+                )
+        
+    # print(images[0])
+    
     json_obj = {
             "model": "llava",
             "prompt": query.query,
             "stream": False,
-            "images": query.images}
-    requests_client = request.app.requests_client
+            "images": images}
+    # print("Sending request to localhost")
     response = await requests_client.post(OLLAMA_URL, json=json_obj, timeout=None)
     response = json.loads(response.json()["response"])
     return_response = {
@@ -64,5 +91,3 @@ async def infer(request: Request, query: InferQuery):
         content=json.dumps(return_response),
         status_code=200
     )
-
-

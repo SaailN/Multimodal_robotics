@@ -22,7 +22,7 @@ class ChatQuery(BaseModel):
 
 {"response": {"x": 0, "y": 0, "z": 0}} -->
 
-2. /infer - Get inference by passing in image(s)
+2. /infer - Get inference by passing in image(s) URLs
 
 <!-- **Request** - 
 class InferQuery(BaseModel):
