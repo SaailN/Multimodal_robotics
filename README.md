@@ -2,7 +2,7 @@
 
 **Access at:** https://usable-frank-kitten.ngrok-free.app/
 
-### Enable FastAPI server and connect to ngrok**
+### Enable FastAPI server and connect to ngrok
 
 ```fastapi run```
 
@@ -15,6 +15,7 @@
 
 **Request** - 
 class ChatQuery(BaseModel):
+
    query: str | None
 
 **Response** - 
@@ -25,7 +26,13 @@ class ChatQuery(BaseModel):
 
 **Request** - 
 class InferQuery(BaseModel):
+
    query: str | None 
+
    images : list[str] | None
 
 Images should be base64 encoded.
+
+**Response** 
+
+{"response" : <response>}
