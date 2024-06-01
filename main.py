@@ -27,7 +27,9 @@ def index():
 async def command(request: Request, query: ChatQuery):
     json_obj = {
             "model": "llava",
-            "prompt": """I will give you x, y, and z coordinates as three numbers in my query. 
+            "prompt": """I will give you x, y, and z coordinates as three numbers in my query. Unless specified, 
+                            the first number is x, second is y, third is z. If x, y,z are mentioned in the query in a different order, map the numbers
+                            accordingly.
                             Please return a JSON object of the form {\"x\": <integer>, \"y\": <integer>, \"z\": <integer>}. 
                             Do not respond with any text, just the JSON object. My query starts now - """ + query.query,
             "stream": False,
