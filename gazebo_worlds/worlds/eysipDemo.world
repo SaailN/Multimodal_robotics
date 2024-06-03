@@ -133,6 +133,24 @@
     table end
     -->
 
+  <include>
+      <uri>model://apple</uri>
+      <name>apple</name>
+      <pose>0.58 -1.25 0.5 -0 0.0</pose>
+	</include>
+
+<include>
+      <uri>model://basket</uri>
+      <name>fruitBasket</name>
+      <pose>1.13 -1.25 0.5 -0 0.0</pose>
+	</include>
+  
+  <include>
+      <uri>model://orange</uri>
+      <name>orange</name>
+      <pose>0.5 -2.2 0.5 -0 0.0</pose>
+	</include>
+  
 
   <include>
       <uri>model://arm_base</uri>

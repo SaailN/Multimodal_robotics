@@ -91,7 +91,8 @@
                 </camera>
                 <always_on>1</always_on>
                 <update_rate>30</update_rate>
-                <visualize>0</visualize>
+                <visualize>1</visualize>
+                
             </sensor>
             <sensor name="cameracolor" type="camera">
                 <camera name="camera">
@@ -113,7 +114,8 @@
                 </camera>
                 <always_on>1</always_on>
                 <update_rate>30</update_rate>
-                <visualize>0</visualize>
+                <visualize>1</visualize>
+                
             </sensor>
             <sensor name="cameraired1" type="camera">
                 <camera name="camera">
@@ -135,7 +137,8 @@
                 </camera>
                 <always_on>1</always_on>
                 <update_rate>1</update_rate>
-                <visualize>0</visualize>
+                <visualize>1</visualize>
+                
             </sensor>
             <sensor name="cameraired2" type="camera">
                 <camera name="camera">
@@ -157,7 +160,7 @@
                 </camera>
                 <always_on>1</always_on>
                 <update_rate>1</update_rate>
-                <visualize>0</visualize>
+                <visualize>1</visualize>
             </sensor>
 
       
