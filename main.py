@@ -19,7 +19,7 @@ async def lifespan(app: FastAPI):
 # create app 
 app = FastAPI(lifespan=lifespan)
 
-yolo_model = torch.load("yolov5s.pt")
+yolo_model = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True, device="gpu")
 
 # index
 @app.get("/")
