@@ -1,12 +1,13 @@
 from fastapi import FastAPI, Response, Request
 import httpx
 from contextlib import asynccontextmanager
-from request_body import ChatQuery, InferQuery
+from request_body import ChatQuery, InferQuery, InstructQuery
 import json 
 from constants import * 
 import base64 
-from utils import compress_image
+from utils import *
 import os 
+import torch
 
 # required for async post requests from server
 @asynccontextmanager
@@ -17,6 +18,8 @@ async def lifespan(app: FastAPI):
 
 # create app 
 app = FastAPI(lifespan=lifespan)
+
+yolo_model = torch.load("yolov5s.pt")
 
 # index
 @app.get("/")
@@ -57,29 +60,16 @@ async def infer(request: Request, query: InferQuery):
     images = [] # contains base64 of all images
     
     for image_url in query.images:
-        if not image_url.startswith("http"): # not a URL
+        image_path = download_image(image_url)
+        if not image_path:
             return Response(
-                content=json.dumps({"response": "Invalid URL of image"}),
+                content="Error downloading image",
                 status_code=400
             )
-        with httpx.stream("GET", image_url) as response:
-            if response.status_code == 200:
-                image = response.read()
-                filepath = "dmp/" + image_url.split("/")[-1] + ".jpg"
-                with open(filepath, "wb") as f:
-                    f.write(image)
-                compress_image(filepath, filepath, quality=10)
-                with open(filepath, "rb") as f:
-                    image = f.read()
-                os.remove(filepath)
-                base64_data = base64.b64encode(image)
-                base64_string = base64_data.decode('utf-8')
-                images.append(base64_string)
-            else:
-                return Response(
-                    content=json.dumps({"response": "Invalid URL of image"}),
-                    status_code=400
-                )
+        compress_image(image_path, image_path, quality=10)
+        base64_string = get_base64(image_path)
+        images.append(base64_string)
+        delete_image(image_path)
             
     json_obj = {
             "model": "llava",
@@ -96,3 +86,32 @@ async def infer(request: Request, query: InferQuery):
         content=json.dumps(return_response),
         status_code=200
     )
+
+@app.get('/instruct')
+async def instruct(request: Request, query: InstructQuery):
+    image_url = query.image
+    image_path = download_image(image_url)
+    if not image_path:
+        return Response(
+            content="Error downloading image",
+            status_code=400
+        )
+    
+    im = Image.open(image_path)
+    result = yolo_model([im])
+    result = result.pandas().xyxy[0]
+
+    llm_prompt = json.dumps(result["name"].to_dict())
+    user_ask = query.query
+
+    json_obj = {
+            "model": "llava",
+            "prompt": f"""The user has given the query {query.query}. Is it executable given the fact that the scene has the objects given by the following JSON
+                        object? {llm_prompt}
+                        Output 0 if no, 1 if yes.""",
+            "stream": False,
+            "format": "json"}
+    
+    requests_client = request.app.requests_client
+    response = await requests_client.post(OLLAMA_URL, json=json_obj, timeout=None)
+    print(response)

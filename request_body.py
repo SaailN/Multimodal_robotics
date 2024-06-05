@@ -7,3 +7,8 @@ class ChatQuery(BaseModel):
 class InferQuery(BaseModel):
    query: str | None 
    images : list[str] | None
+
+class InstructQuery(BaseModel):
+   query: str | None
+   image: str | None
+   depth: str | None
