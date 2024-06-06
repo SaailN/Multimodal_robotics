@@ -17,7 +17,7 @@ import math
 import re
 from sensor_msgs.msg import JointState
 from std_msgs.msg import Int8
-import transforms3d as tf3d
+import transforms3d as tf3d # type: ignore
 import numpy as np
 from std_msgs.msg import Bool
 import yaml

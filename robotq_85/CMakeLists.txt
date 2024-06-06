@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(mani_stack)
+project(robotq_85)
 
 # Default to C99
 if(NOT CMAKE_C_STANDARD)
@@ -23,10 +23,7 @@ find_package(rclpy REQUIRED)
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
 
-rosidl_generate_interfaces(${PROJECT_NAME}
-  "srv/SendPose.srv"
-  #DEPENDENCIES geometry_msgs # Add packages that above messages depend on, in this case geometry_msgs for Sphere.msg
-)
+
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -42,40 +39,20 @@ endif()
 
 install(
   DIRECTORY
-    scripts
-    assets
     launch
+    meshes
+    urdf
   DESTINATION
     share/${PROJECT_NAME}/
 )
 
-install(
-  DIRECTORY
-    assets
-    srv
-  DESTINATION
-    lib/${PROJECT_NAME}
-)
-install(
-  PROGRAMS
-  DESTINATION lib/${PROJECT_NAME}
-)
-file(GLOB MY_PROGRAMS "scripts/*")
-install(
-  PROGRAMS ${MY_PROGRAMS}
-  DESTINATION lib/${PROJECT_NAME}/scripts
-)
-install(
-  PROGRAMS
-  DESTINATION lib/${PROJECT_NAME}
-)
+
 file(GLOB MY_PROGRAMS "launch/*")
 
 install(
   PROGRAMS ${MY_PROGRAMS}
   DESTINATION lib/${PROJECT_NAME}/launch
 )
-
 
 #script installed
 

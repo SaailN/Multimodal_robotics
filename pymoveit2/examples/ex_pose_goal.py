@@ -48,7 +48,7 @@ def main():
     position = node.get_parameter("position").get_parameter_value().double_array_value
     quat_xyzw = node.get_parameter("quat_xyzw").get_parameter_value().double_array_value
     cartesian = node.get_parameter("cartesian").get_parameter_value().bool_value
-
+    
     # Move to pose
     node.get_logger().info(
         f"Moving to {{position: {list(position)}, quat_xyzw: {list(quat_xyzw)}}}"

@@ -37,7 +37,7 @@ import sys
 import cv2
 import math
 import tf2_ros
-import transforms3d as tf3d
+import transforms3d as tf3d # type: ignore
 import numpy as np
 from rclpy.node import Node
 from cv_bridge import CvBridge, CvBridgeError

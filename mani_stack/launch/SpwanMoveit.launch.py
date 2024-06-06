@@ -43,11 +43,12 @@ def run_xacro(xacro_file):
 
 def generate_launch_description():
     moveit_config_folder_name = 'ur5_moveit'
-
+    # gripper_moveit_config_folder_name = 'robotq_85'
     xacro_file = get_package_file(moveit_config_folder_name, 'config/ur5.urdf.xacro')
+    # gripper_Xacro_file = get_package_file(gripper_moveit_config_folder_name, 'urdf/robotiq_arg2f_85_model.xacro')
     urdf_file = run_xacro(xacro_file)
     robot_description_arm = load_file(urdf_file)
-
+    
     srdf_file = get_package_file(moveit_config_folder_name, 'config/ur5.srdf')
     kinematics_file = get_package_file(moveit_config_folder_name, 'config/kinematics.yaml')
     ompl_config_file = get_package_file(moveit_config_folder_name, 'config/ompl_planning.yaml')
