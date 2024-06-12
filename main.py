@@ -1,6 +1,7 @@
 from robots import *
 from utils import *
-
+from templates import api_docs, llm_prompt
+import prompts
 config = {
     "robot": "UR5",  # not using
     "robot_apis": ["place_object", "pick_object"],
@@ -9,7 +10,7 @@ config = {
     "scene": "dynamic",
     "scene_desc": "The scene has fruits (stacked) and baskets, whose coordinates we do not know.",
     "suffix": "Write code using the provided APIs to perform the task. No comments.",
-    "error_handling": False,
+    "error_handling": True,
     "imports": False,
     "code_output": True,
 }
@@ -28,55 +29,28 @@ class LMP:
         self.utils_doc = utils_doc
         self.scene_desc = config["scene_desc"]
         self.suffix = config["suffix"]
+        self.config = config
 
     def get_api_docs(self):
-        docs = f"""
-Robot APIs:
-        {self.robot_doc}
-Utils APIs:
-        {self.utils_doc}
-        """
-        return docs
+        return_val = api_docs.substitute({
+            "robot_doc": self.robot_doc,
+            "utils_doc": self.utils_doc
+        })
+        return return_val
 
     def get_prompt(self, task, filename):
-        camera_view = (
-            "The camera may not see the entire scene at once."
-            if not config["full_view"]
-            else "The camera sees the entire scene at once."
-        )
-        scene_dynamic = (
-            "The scene is dynamic. Objects may move over time."
-            if config["scene"] == "dynamic"
-            else "The scene is static."
-        )
-        error_handling = (
-            "Error handling is required."
-            if config["error_handling"]
-            else "Error handling is not required."
-        )
-        imports = (
-            "Import statements required"
-            if config["imports"]
-            else "No import statements required."
-        )
-        code_output = (
-            "Code output is required."
-            if config["code_output"]
-            else "Code output is not required."
-        )
-        prompt = f"""These are the APIs defined.
-        {self.get_api_docs()}
-
-Task - {task}
-
-{self.scene_desc}. {camera_view} {scene_dynamic}
-{self.suffix}
-
-{error_handling}
-{imports}
-{code_output}
-
-        """
+        
+        prompt = llm_prompt.substitute({
+            "task": task,
+            "scene_desc": self.scene_desc,
+            "camera_view": prompts.get_camera_prompt(config["full_view"]),
+            "scene_dynamic": prompts.get_scene_prompt(config["scene"]),
+            "error_handling": prompts.get_error_prompt(config["error_handling"]),
+            "imports": prompts.get_imports_prompt(config["imports"]),
+            "code_output": prompts.get_code_output_prompt(config["code_output"]),
+            "suffix": self.suffix,
+            "api_docs": self.get_api_docs()
+        })
         with open(filename, "w") as f:
             f.write(prompt)
 

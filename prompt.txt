@@ -1,5 +1,6 @@
+
 These are the APIs defined.
-        
+
 Robot APIs:
         
     Name: place_object
@@ -29,15 +30,13 @@ Utils APIs:
     Input: text to say
     Output: None
     
-        
+
 
 Task - Pick 3 apples and place it in the basket.
 
 The scene has fruits (stacked) and baskets, whose coordinates we do not know.. The camera may not see the entire scene at once. The scene is dynamic. Objects may move over time.
 Write code using the provided APIs to perform the task. No comments.
 
-Error handling is not required.
+Error handling is required.
 No import statements required.
 Code output is required.
-
-        
