@@ -6,7 +6,7 @@ def get_camera_prompt(view):
     )
 def get_scene_prompt(scene):
     return (
-        "The scene is dynamic. Objects may move over time."
+        "The scene is dynamic. Objects may move over time. Detect objects everytime."
         if scene == "dynamic"
         else "The scene is static."
     )
