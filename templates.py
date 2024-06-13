@@ -1,13 +1,16 @@
 from string import Template
 
-api_docs = Template("""
+api_docs = Template(
+    """
 Robot APIs:
         $robot_doc
 Utils APIs:
         $utils_doc
-""")
+"""
+)
 
-llm_prompt = Template("""
+llm_prompt = Template(
+    """
 These are the APIs defined.
 $api_docs
 
@@ -18,4 +21,5 @@ $suffix
 
 $error_handling
 $imports
-$code_output""")
+$code_output"""
+)

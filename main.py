@@ -2,6 +2,10 @@ from robots import *
 from utils import *
 from templates import api_docs, llm_prompt
 import prompts
+import llm_apis
+from rich.console import Console
+
+
 config = {
     "robot": "UR5",  # not using
     "robot_apis": ["place_object", "pick_object"],
@@ -13,6 +17,8 @@ config = {
     "error_handling": True,
     "imports": False,
     "code_output": True,
+    "prompt_output_file": "prompt.txt",
+    "code_output_file": "output.py",
 }
 
 
@@ -32,33 +38,52 @@ class LMP:
         self.config = config
 
     def get_api_docs(self):
-        return_val = api_docs.substitute({
-            "robot_doc": self.robot_doc,
-            "utils_doc": self.utils_doc
-        })
+        return_val = api_docs.substitute(
+            {"robot_doc": self.robot_doc, "utils_doc": self.utils_doc}
+        )
         return return_val
 
-    def get_prompt(self, task, filename):
-        
-        prompt = llm_prompt.substitute({
-            "task": task,
-            "scene_desc": self.scene_desc,
-            "camera_view": prompts.get_camera_prompt(config["full_view"]),
-            "scene_dynamic": prompts.get_scene_prompt(config["scene"]),
-            "error_handling": prompts.get_error_prompt(config["error_handling"]),
-            "imports": prompts.get_imports_prompt(config["imports"]),
-            "code_output": prompts.get_code_output_prompt(config["code_output"]),
-            "suffix": self.suffix,
-            "api_docs": self.get_api_docs()
-        })
-        with open(filename, "w") as f:
+    def get_prompt(self, task):
+
+        prompt = llm_prompt.substitute(
+            {
+                "task": task,
+                "scene_desc": self.scene_desc,
+                "camera_view": prompts.get_camera_prompt(config["full_view"]),
+                "scene_dynamic": prompts.get_scene_prompt(config["scene"]),
+                "error_handling": prompts.get_error_prompt(config["error_handling"]),
+                "imports": prompts.get_imports_prompt(config["imports"]),
+                "code_output": prompts.get_code_output_prompt(config["code_output"]),
+                "suffix": self.suffix,
+                "api_docs": self.get_api_docs(),
+            }
+        )
+        with open(config["prompt_output_file"], "w") as f:
             f.write(prompt)
+        return prompt
 
 
 def main():
+    console = Console()
+
+    console.print("[yellow]Initializing LLM API. [/yellow]")
+    llm_apis.setup_llm_api()
+    # console.control("\033[A\033[K")
+    console.print("[green]LLM API initialized successfully. [/green]")
+
     lmp = LMP(config)
-    task = "Pick 3 apples and place it in the basket."
-    lmp.get_prompt(task, "prompt.txt")
+
+    task = console.input("Input task: \n")
+    prompt = lmp.get_prompt(task)
+
+    console.print("[green]Prompt generated successfully. [/green]")
+    console.print("[yellow]Sending prompt to LLM for code generation. [/yellow]")
+
+    code = llm_apis.generate_llm_response(prompt, write=config["code_output_file"])
+    console.print("[green]Code generated successfully. [/green]")
+
+    console.print("[yellow]Printing code. [/yellow]")
+    console.print(code)
 
 
 if __name__ == "__main__":
