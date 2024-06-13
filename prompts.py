@@ -7,11 +7,7 @@ def get_camera_prompt(view):
 
 
 def get_scene_prompt(scene):
-    return (
-        "The scene is dynamic."
-        if scene == "dynamic"
-        else "The scene is static."
-    )
+    return "The scene is dynamic." if scene == "dynamic" else "The scene is static."
 
 
 def get_error_prompt(error):
