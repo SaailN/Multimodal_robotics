@@ -32,7 +32,7 @@ Utils APIs:
     
 
 
-Task - pick 2 apples and place in the red basket
+Task - pick up 2 apples and place in the red basket
 
 The scene has fruits (stacked) and baskets, whose coordinates we do not know.. The camera may not see the entire scene at once. The scene is dynamic.
 Write code using the provided APIs to perform the task. No comments.
