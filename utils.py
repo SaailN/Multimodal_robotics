@@ -18,7 +18,7 @@ def detect_objects(objects=[]):
     Output dictionary of the format
     {
         'object': 'object_name',
-        'location': {"x": 0.0, "y": 0.0, "z": 0.0}
+        'location': {"x": 0.0, "y": 0.0}
     }
     """
     return "Scene description"

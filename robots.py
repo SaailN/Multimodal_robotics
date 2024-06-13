@@ -1,6 +1,3 @@
-# import requests
-
-
 def pick_object(x, y) -> bool:
     """
     Name: pick_object
@@ -15,11 +12,11 @@ def pick_object(x, y) -> bool:
     return picked
 
 
-def place_object(x, y, z) -> bool:
+def place_object(x, y) -> bool:
     """
     Name: place_object
-    Signature: place_object(x: float, y: float, z: float) -> bool
-    Input: x, y, z coordinates of object to place
+    Signature: place_object(x: float, y: float) -> bool
+    Input: x, y coordinates of object to place
     Output: True if object is placed, False otherwise
     """
     # requests call to place
