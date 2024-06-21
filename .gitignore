@@ -3,3 +3,4 @@ prompt.txt
 .env
 output.py
 venv/
+dmp/
