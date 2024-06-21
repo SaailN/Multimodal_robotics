@@ -6,11 +6,10 @@ from dotenv import load_dotenv
 def setup_llm_api():
     load_dotenv()
     genai.configure(api_key=os.environ["API_KEY"])
-    model = genai.GenerativeModel("gemini-1.5-flash")
 
 
 def generate_llm_response(prompt, write=""):
-    model = genai.GenerativeModel("gemini-1.5-flash")
+    model = genai.GenerativeModel("gemini-1.5-pro")
     response = model.generate_content(prompt)
     code = response.candidates[0].content.parts[0].text
     if write:

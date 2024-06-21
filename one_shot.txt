@@ -1,0 +1,95 @@
+PROMPT:
+
+These are the APIs defined.
+
+Robot APIs:
+        
+    Name: place_object
+    Signature: place_object(x: float, y: float) -> bool
+    Input: x, y coordinates of object to place
+    Output: True if object is placed, False otherwise
+    
+    Name: pick_object
+    Signature: pick_object(x: float, y: float) -> bool
+    Input: x, y coordinates of object to pick
+    Output: True if object is picked, False otherwise
+    
+Utils APIs:
+        
+    Name: detect_objects
+    Description: Returns the coordinates of the objects queried by the input parameter objects
+    Signature: detect_objects(objects: list) -> dict
+    Input: None
+    Output dictionary of the format
+    {
+        'object': 'object_name',
+        'location': {"x": 0.0, "y": 0.0}
+    }
+    
+    Name: say
+    Signature: say(text: str) -> None
+    Input: text to say
+    Output: None
+    
+
+
+Task - pick 3 apples and place each in red, green, and yellow basket
+
+The scene has fruits (stacked) and baskets, whose coordinates we do not know. The robot can pick only 1 object at a time.. The camera may not see the entire scene at once. The scene is dynamic.
+Write code using the provided APIs to perform the task. No comments.
+
+Error handling is required.
+No import statements required.
+Code output is required.
+
+
+
+RESPONSE:
+
+def execute_task():
+    try:
+        # Detect apples and baskets
+        detected_objects = detect_objects(['apple', 'red basket', 'green basket', 'yellow basket'])
+        
+        apples = [obj['location'] for obj in detected_objects if obj['object'] == 'apple']
+        red_basket = next(obj['location'] for obj in detected_objects if obj['object'] == 'red basket')
+        green_basket = next(obj['location'] for obj in detected_objects if obj['object'] == 'green basket')
+        yellow_basket = next(obj['location'] for obj in detected_objects if obj['object'] == 'yellow basket')
+        
+        if len(apples) < 3:
+            say("Not enough apples detected.")
+            return False
+        
+        # Pick and place apples
+        if pick_object(apples[0]['x'], apples[0]['y']):
+            if not place_object(red_basket['x'], red_basket['y']):
+                say("Failed to place apple in red basket.")
+                return False
+        else:
+            say("Failed to pick apple.")
+            return False
+        
+        if pick_object(apples[1]['x'], apples[1]['y']):
+            if not place_object(green_basket['x'], green_basket['y']):
+                say("Failed to place apple in green basket.")
+                return False
+        else:
+            say("Failed to pick apple.")
+            return False
+        
+        if pick_object(apples[2]['x'], apples[2]['y']):
+            if not place_object(yellow_basket['x'], yellow_basket['y']):
+                say("Failed to place apple in yellow basket.")
+                return False
+        else:
+            say("Failed to pick apple.")
+            return False
+        
+        say("Task completed successfully.")
+        return True
+    
+    except Exception as e:
+        say(f"An error occurred: {e}")
+        return False
+
+execute_task()

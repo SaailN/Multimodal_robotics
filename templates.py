@@ -11,6 +11,7 @@ Utils APIs:
 
 llm_prompt = Template(
     """
+PROMPT:
 These are the APIs defined.
 $api_docs
 
