@@ -37,7 +37,6 @@ class LMP:
         self.scene_desc = config["scene_desc"]
         self.suffix = config["suffix"]
         self.config = config
-        
 
     def get_api_docs(self):
         return_val = api_docs.substitute(

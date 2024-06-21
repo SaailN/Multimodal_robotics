@@ -26,5 +26,4 @@ $code_output
 
 RESPONSE:
 """
-
 )
