@@ -17,6 +17,7 @@ config = {
     "error_handling": True,
     "imports": False,
     "code_output": True,
+    "one_shot_file": "one_shot.txt",
     "prompt_output_file": "prompt.txt",
     "code_output_file": "output.py",
 }
@@ -36,6 +37,7 @@ class LMP:
         self.scene_desc = config["scene_desc"]
         self.suffix = config["suffix"]
         self.config = config
+        
 
     def get_api_docs(self):
         return_val = api_docs.substitute(
@@ -58,6 +60,9 @@ class LMP:
                 "api_docs": self.get_api_docs(),
             }
         )
+        with open(config["one_shot_file"], "r") as f:
+            one_shot = "".join(f.readlines())
+        prompt = one_shot + prompt
         with open(config["prompt_output_file"], "w") as f:
             f.write(prompt)
         return prompt
