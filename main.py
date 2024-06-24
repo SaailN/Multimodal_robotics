@@ -1,10 +1,13 @@
 from robots import *
 from utils import *
-from templates import api_docs, llm_prompt
+from templates import api_docs, llm_prompt_task
 import prompts
 import llm_apis
 from rich.console import Console
 from constants import config
+from robots import *
+from utils import *
+
 
 
 class LMP:
@@ -30,7 +33,7 @@ class LMP:
 
     def get_prompt(self, task):
 
-        prompt = llm_prompt.substitute(
+        prompt = llm_prompt_task.substitute(
             {
                 "task": task,
                 "scene_desc": self.scene_desc,
@@ -72,6 +75,7 @@ def main():
 
     console.print("[yellow]Printing code. [/yellow]")
     console.print(code)
+    exec(code)
 
 
 if __name__ == "__main__":

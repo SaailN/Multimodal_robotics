@@ -9,11 +9,11 @@ Utils APIs:
 """
 )
 
-llm_prompt = Template(
+llm_prompt_full = Template(
     """
 PROMPT:
 These are the APIs defined.
-$api_docs
+$api_doc
 
 Task - $task
 
@@ -27,3 +27,12 @@ $code_output
 RESPONSE:
 """
 )
+
+llm_prompt_task = Template(
+    """
+Task - $task
+
+RESPONSE:
+"""
+)
+

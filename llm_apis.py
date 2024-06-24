@@ -15,4 +15,6 @@ def generate_llm_response(prompt, write=""):
     if write:
         with open(write, "w") as f:
             f.write(code.split("\n", 1)[1].rsplit("\n", 1)[0])
-    return response.candidates[0].content.parts[0].text
+    with open(write, "r") as f:
+        code = "".join(f.readlines())
+    return code.replace("`", "")
