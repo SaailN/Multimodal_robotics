@@ -14,7 +14,6 @@
   <xacro:include filename="$(find ur_description)/urdf/ur5.urdf.xacro" />
   <xacro:include filename="$(find ur_description)/urdf/realsense2.urdf.xacro" />
   
-  <!-- arm -->
   <xacro:ur5_robot prefix="" joint_limited="false"
     transmission_hw_interface="$(arg transmission_hw_interface)"  
   />
@@ -26,13 +25,13 @@
     <child link = "base_link" />
     <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
   </joint>
-
   
-  <joint name="realsense_joint" type="fixed">
+   <joint name="realsense_joint" type="fixed">
     <parent link="wrist_3_link" />
     <child link="camera_link" />
     <origin xyz="0.0 0.0 -0.07" rpy="3.14 0 1.57" /> 
-  </joint>
+  </joint> 
+  
   <!-- camera on arm configuration -->
   
    <!-- <joint name="realsense_joint" type="fixed">

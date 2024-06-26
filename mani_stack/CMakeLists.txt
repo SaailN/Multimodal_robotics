@@ -25,6 +25,9 @@ find_package(rclpy REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
   "srv/SendPose.srv"
+  "srv/Coordinate.srv"
+  "srv/Servo.srv"
+  "srv/Manipulation.srv"
   #DEPENDENCIES geometry_msgs # Add packages that above messages depend on, in this case geometry_msgs for Sphere.msg
 )
 
@@ -60,9 +63,14 @@ install(
   PROGRAMS
   DESTINATION lib/${PROJECT_NAME}
 )
-file(GLOB MY_PROGRAMS "scripts/*")
+file(GLOB MY_PROGRAMS "scripts/arm_manipulation/*")
+file(GLOB WEBSOCKET "scripts/websocket/*")
+file(GLOB V2 "scripts/arm_manipulation_V2/*")
+
 install(
   PROGRAMS ${MY_PROGRAMS}
+  PROGRAMS ${WEBSOCKET}
+  PROGRAMS ${V2}
   DESTINATION lib/${PROJECT_NAME}/scripts
 )
 install(

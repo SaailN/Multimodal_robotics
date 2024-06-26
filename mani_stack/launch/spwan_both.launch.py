@@ -1,19 +1,26 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
+
 import os
-import yaml
-import launch_ros
-from launch import LaunchDescription
-from launch_ros.actions import Node
-from launch.conditions import IfCondition
-from ament_index_python import get_package_share_directory
-from launch.actions import IncludeLaunchDescription
-from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.actions import TimerAction
-import launch
-import launch_ros
-import os
+
 from ament_index_python.packages import get_package_share_directory
+from launch import LaunchDescription
+import launch
+from launch.actions import DeclareLaunchArgument
 from launch.actions import IncludeLaunchDescription
+from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.substitutions import LaunchConfiguration
+from launch_ros.actions import Node
+from launch.actions import ExecuteProcess
+from ament_index_python.packages import get_package_prefix
+import yaml
+
+from launch.actions import TimerAction
+
+
+pkg_name = "ur5_gripper"
 
 
 def get_package_file(package, file_path):
@@ -22,185 +29,119 @@ def get_package_file(package, file_path):
     absolute_file_path = os.path.join(package_path, file_path)
     return absolute_file_path
 
+
 def load_file(file_path):
     """Load the contents of a file into a string"""
     try:
-        with open(file_path, 'r') as file:
+        with open(file_path, "r") as file:
             return file.read()
-    except EnvironmentError: # parent of IOError, OSError *and* WindowsError where available
+    except (
+        EnvironmentError
+    ):  # parent of IOError, OSError *and* WindowsError where available
         return None
+
 
 def load_yaml(file_path):
     """Load a yaml file into a dictionary"""
     try:
-        with open(file_path, 'r') as file:
+        with open(file_path, "r") as file:
             return yaml.safe_load(file)
-    except EnvironmentError: # parent of IOError, OSError *and* WindowsError where available
+    except (
+        EnvironmentError
+    ):  # parent of IOError, OSError *and* WindowsError where available
         return None
+
 
 def run_xacro(xacro_file):
     """Run xacro and output a file in the same directory with the same name, w/o a .xacro suffix"""
     urdf_file, ext = os.path.splitext(xacro_file)
-    if ext != '.xacro':
-        raise RuntimeError(f'Input file to xacro must have a .xacro extension, got {xacro_file}')
-    os.system(f'xacro {xacro_file} -o {urdf_file}')
+    # if ext != '.xacro':
+    #     raise RuntimeError(f'Input file to xacro must have a .xacro extension, got {xacro_file}')
+    os.system(f"xacro {xacro_file} -o {urdf_file}")
     return urdf_file
 
 
 def generate_launch_description():
-    start_world = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(get_package_share_directory('ebot_description'), 'launch', 'start_world_launch.py'),
-        )
-    )
-
-    spawn_arm = launch_ros.actions.Node(
-        package='gazebo_ros',
-        name='ur5_spawner',
-        executable='spawn_entity.py',
-        arguments=['-entity', 'ur5', '-topic', 'robot_description_ur5', '-x', '6.3', '-y', '-0.05', '-z', '0.58', '-Y',
-                   '3.14'],
-        output='screen')
-
-
-    moveit_config_folder_name = 'ur5_moveit'
-
-    xacro_file = get_package_file(moveit_config_folder_name, 'config/ur5.urdf.xacro')
-    urdf_file = run_xacro(xacro_file)
+    pkgPAth = get_package_file(pkg_name, "config/ur5.urdf.xacro")
+    print("path:", pkgPAth)
+    urdf_file = run_xacro(pkgPAth)
     robot_description_arm = load_file(urdf_file)
+    params = {"robot_description": robot_description_arm}
 
-    srdf_file = get_package_file(moveit_config_folder_name, 'config/ur5.srdf')
-    kinematics_file = get_package_file(moveit_config_folder_name, 'config/kinematics.yaml')
-    ompl_config_file = get_package_file(moveit_config_folder_name, 'config/ompl_planning.yaml')
-    moveit_controllers_file = get_package_file(moveit_config_folder_name, 'config/moveit_controllers.yaml')
-    moveit_servo_file = get_package_file(moveit_config_folder_name, "config/ur_servo.yaml")
-    ros_controllers_file = get_package_file('ur5_moveit', 'config/ros_controllers.yaml')
-
-    robot_description_semantic = load_file(srdf_file)
-    kinematics_config = load_yaml(kinematics_file)
-    ompl_config = load_yaml(ompl_config_file)
-
-    moveit_controllers = {
-        'moveit_simple_controller_manager': load_yaml(moveit_controllers_file),
-        'moveit_controller_manager': 'moveit_simple_controller_manager/MoveItSimpleControllerManager'
-    }
-    trajectory_execution = {
-        'moveit_manage_controllers': True,
-        'trajectory_execution.allowed_execution_duration_scaling': 1.2,
-        'trajectory_execution.allowed_goal_duration_margin': 0.5,
-        'trajectory_execution.allowed_start_tolerance': 0.01
-    }
-    planning_scene_monitor_config = {
-        'publish_planning_scene': True,
-        'publish_geometry_updates': True,
-        'publish_state_updates': True,
-        'publish_transforms_updates': True
-    }
-
-    # MoveIt node
-    move_group_node = Node(
-        package='moveit_ros_move_group',
-        executable='move_group',
-        output='screen',
-        parameters=[
-            {
-                'robot_description': robot_description_arm,
-                'robot_description_semantic': robot_description_semantic,
-                'robot_description_kinematics': kinematics_config,
-                'ompl': ompl_config,
-                'planning_pipelines': ['ompl'],
-            },
-            moveit_controllers,
-            trajectory_execution,
-            planning_scene_monitor_config,
-            {"use_sim_time": True},
+    robot_state_publisher_arm = TimerAction(
+        period=4.0,
+        actions=[
+            Node(
+                name="robot_state_publisher",
+                package="robot_state_publisher",
+                executable="robot_state_publisher",
+                output="screen",
+                parameters=[
+                    {"use_sime_time": True, "robot_description": robot_description_arm}
+                ],
+            )
         ],
     )
-
-    # Servo node for realtime control
-    servo_yaml = load_yaml(moveit_servo_file)
-    servo_params = {"moveit_servo": servo_yaml}
-    robot_description_s = {"robot_description": robot_description_arm}
-    robot_description_semantic_s = {"robot_description_semantic": robot_description_semantic}
-
-    servo_node = Node(
-        package="moveit_servo",
-        # condition=IfCondition(launch_servo),
-        executable="servo_node_main",
-        parameters=[
-            servo_params,
-            robot_description_s,
-            robot_description_semantic_s,
-        ],
-        output="screen",
-    )
-
-    # TF information
-    robot_state_publisher_arm = Node(
-        name='robot_state_publisher',
-        package='robot_state_publisher',
-        executable='robot_state_publisher',
-        output='screen',
-        parameters=[{'robot_description': robot_description_arm}],
-        remappings=[('robot_description', 'robot_description_ur5')]
-    )
-
-    #  Visualization (parameters needed for MoveIt display plugin)
-    rviz = Node(
-        name='rviz',
-        package='rviz2',
-        executable='rviz2',
-        output='screen',
-        parameters=[
-            {
-                'robot_description': robot_description_arm,
-                'robot_description_semantic': robot_description_semantic,
-                'robot_description_kinematics': kinematics_config,
-            }
+    joint_state_publisher_node = TimerAction(
+        period=2.0,
+        actions=[
+            Node(
+                package="joint_state_publisher",
+                executable="joint_state_publisher",
+                name="joint_state_publisher",
+                output="both",
+                parameters=[params],
+            )
         ],
     )
-    # Controller manager for realtime interactions
-    ros2_control_node = Node(
-        package="controller_manager",
-        executable="ros2_control_node",
-        name="control_node_ros2",
-        parameters=[
-            {'robot_description': robot_description_arm},
-            ros_controllers_file
+    joint_state_publisher_gui_node = TimerAction(
+        period=6.0,
+        actions=[
+            Node(
+                package="joint_state_publisher_gui",
+                executable="joint_state_publisher_gui",
+                name="joint_state_publisher_gui",
+                condition=launch.conditions.IfCondition(LaunchConfiguration("gui")),
+            )
         ],
-        output="screen",
+    )
+    # spawn_arm = Node(
+    # 	package='gazebo_ros',
+    #     name='spawn_entity',
+    # 	executable='spawn_entity.py',
+    #     arguments=['-entity', 'ISRO_ARM', '-topic', '/robot_description', '-x', '0.0', '-y', '0.0', '-z', '0.58', '-Y', '3.14'],
+    #     output='screen')
+    rviz_node = TimerAction(
+        period=8.0,
+        actions=[
+            Node(
+                package="rviz2",
+                executable="rviz2",
+                name="rviz2",
+                output="screen",
+                parameters=[
+                    {"use_sim_time": True},
+                    {"robot_description": robot_description_arm},
+                ],
+            )
+        ],
+    )
+    return LaunchDescription(
+        [
+            DeclareLaunchArgument(
+                "gui",
+                default_value="True",
+                description="Flag to enable joint_state_publisher_gui",
+            ),
+            robot_state_publisher_arm,
+            joint_state_publisher_node,
+            # spawn_arm,
+            joint_state_publisher_gui_node,
+            rviz_node,
+        ]
     )
 
-    spawn_controllers_manipulator = Node(
-        package="controller_manager",
-        executable="spawner",
-        name="spawner_mani",
-        arguments=['joint_trajectory_controller'],
-        output="screen")
 
-    spawn_controllers_state = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=['joint_state_broadcaster'],
-        output="screen")
-
-    return LaunchDescription([
-        launch.actions.DeclareLaunchArgument(name='gui', default_value='True',
-                                             description='Flag to enable joint_state_publisher_gui'),
-        launch.actions.DeclareLaunchArgument(name='use_sim_time', default_value='True',
-                                             description='Flag to enable use_sim_time'),
-        start_world,
-        spawn_arm,
-
-        robot_state_publisher_arm,
-        TimerAction(period=1.0,
-                    actions=[spawn_controllers_manipulator,
-                             spawn_controllers_state,
-                             rviz,
-                             ros2_control_node,
-                             move_group_node,
-                             servo_node
-                             ]),
-
-    ]
-    )
+# def main():
+#     pkgPAth = get_package_share_directory(pkg_name,'urdf/joel_gauresh_rdf.urdf')
+#     print(pkgPAth)

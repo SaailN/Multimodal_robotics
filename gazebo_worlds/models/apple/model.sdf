@@ -1,6 +1,6 @@
 <?xml version='1.0'?>
 <sdf version='1.7'>
-  <model name='apple'>
+  <model name='orange'>
     <link name='link'>
       <self_collide>0</self_collide>
       <inertial>
@@ -41,7 +41,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <box>
-            <size>0.001 0.001 0.001</size>
+            <size>0.143 0.109 0.123</size>
           </box>
         </geometry>
         <surface>

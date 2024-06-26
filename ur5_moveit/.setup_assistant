@@ -5,9 +5,9 @@ moveit_setup_assistant_config:
   srdf:
     relative_path: config/ur5.srdf
   package_settings:
-    author_name: Joel
-    author_email: joeldevasia1962002@student.sfit.ac.in
-    generated_timestamp: 1695810165
+    author_name: gauresh
+    author_email: gaureshwadekar@gmail.com
+    generated_timestamp: 1718863587
   control_xacro:
     command:
       - position

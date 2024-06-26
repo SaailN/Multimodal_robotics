@@ -1,0 +1,8 @@
+string id
+float64 x
+float64 y
+float64 z
+string goal
+---
+bool success   # indicate successful run of triggered service
+string message # informational, e.g. for error messages

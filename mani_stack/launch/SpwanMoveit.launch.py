@@ -96,7 +96,7 @@ def generate_launch_description():
             {"use_sim_time": True},
         ],
     )
-
+    
     # Servo node for realtime control
     servo_yaml = load_yaml(moveit_servo_file)
     servo_params = {"moveit_servo": servo_yaml}

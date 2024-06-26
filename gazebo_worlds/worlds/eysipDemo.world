@@ -136,7 +136,7 @@
   <include>
       <uri>model://apple</uri>
       <name>apple</name>
-      <pose>0.58 -1.25 0.5 -0 0.0</pose>
+      <pose>0.73 -2.3 0.5 -0 0.0</pose>
 	</include>
 
 <include>
@@ -148,8 +148,26 @@
   <include>
       <uri>model://orange</uri>
       <name>orange</name>
-      <pose>0.5 -2.2 0.5 -0 0.0</pose>
+      <pose>1.03 -2.46 0.5 -0 0.0</pose>
 	</include>
+  
+  <include>
+      <uri>model://mango</uri>
+      <name>mango</name>
+      <pose>1.18 -2.77 0.5 -0 0.0</pose>
+	</include>
+  
+  <include>
+      <uri>model://banana</uri>
+      <name>banana</name>
+      <pose>0.9 -2.75 0.5 -0 0.0</pose>
+	</include>
+  <include>
+      <uri>model://watermelon</uri>
+      <name>watermelon</name>
+      <pose>1.18 -2.3 0.5 -0 0.0</pose>
+	</include>
+  
   
 
   <include>
@@ -160,6 +178,5 @@
 
   <plugin name="gazebo_link_attacher" filename="libgazebo_link_attacher.so"/>
   <plugin name="gazebo_link_ur5_attacher" filename="libgazebo_link_ur5_attacher.so"/>
-
   </world>
 </sdf>

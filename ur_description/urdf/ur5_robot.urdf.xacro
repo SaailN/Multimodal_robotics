@@ -17,14 +17,14 @@
   <!-- ur5 -->
   <xacro:include filename="$(find ur_description)/urdf/ur5.urdf.xacro" />
   <xacro:include filename="$(find ur_description)/urdf/realsense2.urdf.xacro" />
-
+  <xacro:include filename="$(find ebot_description)/models/ebot/ebot.gazebo" />
   <!-- arm -->
   <xacro:ur5_robot prefix="" joint_limited="false"
     transmission_hw_interface="$(arg transmission_hw_interface)"
   />
 
+  <!-- <link name="ebotBaseTop" /> -->
   <link name="world" />
-  
   <!-- <joint name="world_joint" type="fixed">
     <parent link="world" />
     <child link = "base_link" />
@@ -39,11 +39,11 @@
   <!-- camera on arm configuration -->
   
    
-   <joint name="realsense_joint" type="fixed">
+   <!-- <joint name="realsense_joint" type="fixed">
     <parent link="base_link" />
     <child link="camera_link" />
     <origin xyz="0.2 0.0 0.7" rpy="0.0 1.2 0.0" /> 
-  </joint>
+  </joint> -->
   <!-- global camera configuration -->
   <link name="camera_link">  
   <collision>

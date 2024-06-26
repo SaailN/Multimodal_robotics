@@ -42,11 +42,16 @@ def generate_launch_description():
             os.path.join(pkg_gazebo_ros, 'launch', 'gazebo.launch.py'),
         )
     )    
-
+    
     return LaunchDescription([
         DeclareLaunchArgument(
           'world',
           default_value=[os.path.join(pkg_models_dir, 'worlds', 'eysipDemo.world'), ''], # Change name of world file if required.
+        #   default_value=[os.path.join(pkg_models_dir, 'worlds', 'house.world'), ''],
+          description='SDF world file'),
+        DeclareLaunchArgument(
+          'verbose',
+          default_value='true',
           description='SDF world file'),
         gazebo
         # ExecuteProcess(cmd=['gazebo', '--verbose', '-s', 'libgazebo_ros_factory.so'], output='screen'),
