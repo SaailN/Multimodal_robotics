@@ -108,6 +108,6 @@ def pick_and_place_orange_in_basket():
 pick_and_place_orange_in_basket()
 
 ```
-Task - pick 2 apples and place both in yellow basket
+Task - place apple in the red basket and orange on the blue tray
 
 RESPONSE:
