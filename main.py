@@ -76,7 +76,6 @@ def main():
 
     lmp = LMP(config)
 
-    task = console.input("Input task: \n")
     try:
         with wave.open('output.wav', 'wb') as wf:
             wf.setnchannels(CHANNELS)
