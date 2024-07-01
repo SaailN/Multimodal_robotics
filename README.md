@@ -20,11 +20,11 @@ This repository contains the central framework, which using the available Robot 
 - *prompts.py* implements the prompt-engineering techniques for the templates.
 - *output.txt* and *output.py* will contain the generated prompt and code, respectively.
 
-### Things left to do..
+<!-- ### Things left to do..
 
 - Implement Utils APIs - 
     1. Implement object detection and update its docstring in the specified format.
     2. Implement say() and add text-to-speech.
 - Implement Robot APIs - 
     1. Implement picking object with a request-response model for getting task completion status.
-    2. Implement place object similarly.
+    2. Implement place object similarly. -->
