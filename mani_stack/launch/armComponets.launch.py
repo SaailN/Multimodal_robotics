@@ -34,14 +34,14 @@ def generate_launch_description():
     
     start_perception = ExecuteProcess(
         cmd=[[
-            'ros2 run mani_stack go_to_object.py ',
+            'ros2 run mani_stack perceptionFast.py ',
         ]],
         shell=True
     )
 
     start_move_to_goal = ExecuteProcess(
         cmd=[[
-            'ros2 run mani_stack move_to_pose.py',
+            'ros2 run mani_stack manipulator.py',
         ]],
         shell=True
     )
@@ -57,8 +57,8 @@ def generate_launch_description():
     )
  
     return LaunchDescription([
-        # start_perception,
+        start_perception,
         start_move_to_goal,
         star_getCoords,
-        # start_addMesh
+        start_addMesh
     ])

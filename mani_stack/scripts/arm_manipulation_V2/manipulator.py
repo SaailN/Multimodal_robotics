@@ -91,11 +91,16 @@ def main():
         
         counter = 0
         PreviousPose = getCurrentPose()[0]
+        PreviousPose = [round(PreviousPose[0], 2), round(PreviousPose[1], 2), round(PreviousPose[2], 2)]
         while counter < 5:
             moveit2.move_to_pose(position=postion, quat_xyzw=quaterion, cartesian=False)
             
             statuts = moveit2.wait_until_executed()
-            statut = (PreviousPose != getCurrentPose()[0])
+            time.sleep(0.5)
+            currentPose = getCurrentPose()[0]
+            currentPose = [round(currentPose[0], 2), round(currentPose[1], 2), round(currentPose[2], 2)]
+            statut = (PreviousPose != currentPose)
+            print("Statut: ", statut)
             statuts = statuts or statut
             if statuts == True:
                 break
@@ -144,7 +149,7 @@ def main():
         
         while sphericalToleranceAchieved == False:
                 currentPose = getCurrentPose()[0]
-                sphericalToleranceAchieved, magnitude = checkSphericalTolerance(currentPose, TargetPose, 0.02)
+                sphericalToleranceAchieved, magnitude = checkSphericalTolerance(currentPose, TargetPose, 0.03)
                 magnitude *= 3
                 vx, vy, vz = (
                     (TargetPose[0] - currentPose[0]) / magnitude,
@@ -179,10 +184,18 @@ def main():
         elif goal == "basket":
             goaljoints=basketjointStates
         counter = 0
+        PreviousPose = getCurrentPose()[0]
+        PreviousPose = [round(PreviousPose[0], 2), round(PreviousPose[1], 2), round(PreviousPose[2], 2)]
+        print("cureent pose: ", PreviousPose)
         while counter < 5:
                 moveit2.move_to_configuration(goaljoints)
                 statuts = moveit2.wait_until_executed()
-                
+                time.sleep(0.5)
+                currentPose = getCurrentPose()[0]
+                currentPose = [round(currentPose[0], 2), round(currentPose[1], 2), round(currentPose[2], 2)]
+                statut = (PreviousPose != currentPose)
+                print("Statut: ", statut)
+                statuts = statuts or statut
                 if statuts == True:
                     break
                 else:

@@ -16,7 +16,7 @@ This urdf is optimized to work only with gazebo simulator.
 <xacro:include filename="$(find ebot_description)/models/ebot/ebot.gazebo" />
 <xacro:include filename="$(find ur_description)/urdf/ur5_arm.urdf.xacro" />
   
-<!-- <xarco:include filename="$(find ur_description)/urdf/ur5_arm.urdf.xacro" /> -->
+
 <!-- macros for calculating inertia -->
 
 <xacro:property name="base_mass" value="46.034" />
@@ -954,7 +954,6 @@ This urdf is optimized to work only with gazebo simulator.
     <axis
       xyz="0 0 0" />
   </joint>  
-
 
 <!-- IMU -->
   <link name="imu_link">
