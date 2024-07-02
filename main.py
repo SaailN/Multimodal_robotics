@@ -70,12 +70,12 @@ def main():
     console.print("[green]Prompt generated successfully. [/green]")
     console.print("[yellow]Sending prompt to LLM for code generation. [/yellow]")
 
-    code = llm_apis.generate_llm_response(prompt, write=config["code_output_file"])
-    console.print("[green]Code generated successfully. [/green]")
+    # code = llm_apis.generate_llm_response(prompt, write=config["code_output_file"])
+    # console.print("[green]Code generated successfully. [/green]")
 
-    console.print("[yellow]Printing code. [/yellow]")
-    console.print(code)
-    exec(code)
+    # console.print("[yellow]Printing code. [/yellow]")
+    # console.print(code)
+    # exec(code)
 
 
 if __name__ == "__main__":
