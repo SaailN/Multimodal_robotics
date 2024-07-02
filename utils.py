@@ -106,6 +106,7 @@ def detect_objects(objects=[]):
                 "y": round(720 * (((boxes[i][1] +    ((boxes[i][3] - boxes[i][1]) / 2))) / 540).item())
             }
         })
+    print(output)
     return output
 
 if __name__ == "__main__":
