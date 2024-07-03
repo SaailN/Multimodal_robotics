@@ -49,21 +49,35 @@ def generate_launch_description():
     )
 
     
+    # static_transform = launch_ros.actions.Node(
+    #     package='tf2_ros',
+    #     executable='static_transform_publisher',
+    #     name='static_transform_publisher',
+    #     arguments = ["0.0","0.0","0.0" ,"0.0", "0", "0", "world", "odom"],
+    #     output='screen')
+    # spawn_ebot = launch_ros.actions.Node(
+    # 	package='gazebo_ros', 
+    #     name='ebot_spawner',
+    # 	executable='spawn_entity.py',
+    #     # arguments=['-entity', 'ebot', '-topic', 'robot_description_ebot', '-x', '1.1', '-y', '4.35', '-z', '0.1', '-Y', '3.14'],
+    #     arguments=['-entity', 'ebot', '-topic', 'robot_description_ebot', '-x', '0.0', '-y', '0.0', '-z', '0.1', '-Y', '0.0'],
+    #     output='screen'
+    # )
+    
     static_transform = launch_ros.actions.Node(
         package='tf2_ros',
         executable='static_transform_publisher',
         name='static_transform_publisher',
-        arguments = ["0.0","0.0","0.0" ,"0.0", "0", "0", "world", "odom"],
+        arguments = ["1.9", "-2.4", "-0.8", "3.14", "0", "0",  "world", "odom"],
         output='screen')
     spawn_ebot = launch_ros.actions.Node(
     	package='gazebo_ros', 
         name='ebot_spawner',
     	executable='spawn_entity.py',
         # arguments=['-entity', 'ebot', '-topic', 'robot_description_ebot', '-x', '1.1', '-y', '4.35', '-z', '0.1', '-Y', '3.14'],
-        arguments=['-entity', 'ebot', '-topic', 'robot_description_ebot', '-x', '0.0', '-y', '0.0', '-z', '0.1', '-Y', '0.0'],
+        arguments=['-entity', 'ebot', '-topic', 'robot_description_ebot', '-x', '1.9', '-y', '-2.4', '-z', '0.58', '-Y', '3.14'],
         output='screen'
     )
-
                                                  
     return launch.LaunchDescription([
         launch.actions.DeclareLaunchArgument(name='gui', default_value='True',

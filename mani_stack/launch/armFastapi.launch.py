@@ -67,6 +67,6 @@ def generate_launch_description():
         start_perception,
         # start_move_to_goal,
         star_getCoords,
-        # start_fastapi,
-        start_addMesh
+        start_fastapi,
+        # start_addMesh
     ])

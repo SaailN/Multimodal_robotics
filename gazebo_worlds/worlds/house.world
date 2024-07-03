@@ -170,34 +170,7 @@
         </include>
         <pose frame=''>-8.270775 -4.504456 0 0 -0 0.869673</pose>
 	</model>
-	<model name='Chandelier_01_001'>
-        <static>true</static>    
-        <include>
-            <uri>model://aws_robomaker_residential_Chandelier_01</uri>
-        </include>
-        <pose frame=''>1.221061 4.155740 1.295000 0 -0 0</pose>
-	</model>
-  <model name='Chandelier_01_002'>
-        <static>true</static>    
-        <include>
-            <uri>model://aws_robomaker_residential_Chandelier_01</uri>
-        </include>
-        <pose frame=''>-6.451061 -0.692040 1.810000 0 -0 0</pose>
-	</model>
-	<model name='Chandelier_01_003'>
-        <static>true</static>    
-        <include>
-            <uri>model://aws_robomaker_residential_Chandelier_01</uri>
-        </include>
-        <pose frame=''>7.824061 -1.59 1.7510000 0 -0 0</pose>
-	</model>
-  <model name='Chandelier_01_004'>
-        <static>true</static>    
-        <include>
-            <uri>model://aws_robomaker_residential_Chandelier_01</uri>
-        </include>
-        <pose frame=''>1.221061 -1.592040 1.7873000 0 -0 0</pose>
-	</model>
+	
 	<model name='Carpet_01_001'>
         <static>true</static>    
         <include>
@@ -440,20 +413,7 @@
         </include>
         <pose frame=''>-8.704151 1.00058 0.011 0 -0 0</pose>
 	</model>
-	<model name='TV_01_001'>
-        <static>true</static>    
-        <include>
-            <uri>model://aws_robomaker_residential_TV_01</uri>
-        </include>
-        <pose frame=''>0.824259 -5.382968 0.676282 0 -0 -1.561744</pose>
-	</model>
-	<model name='TV_02_001'>
-        <static>true</static>    
-        <include>
-            <uri>model://aws_robomaker_residential_TV_02</uri>
-        </include>
-        <pose frame=''>-6.197322 -1.388739 0.676282 0 -0 -1.561744</pose>
-	</model>	
+	
 	<model name='TVCabinet_01_001'>
         <static>true</static>    
         <include>
@@ -568,115 +528,50 @@
       <direction>-0.5 0.1 -0.9</direction>
     </light>
     !-->
-    <light name='LivingRoom_CeilingLight_0' type='point'>
-      <pose frame=''>1.194296 4.155759 2.2 0 -0 0</pose>
+    <light name="light0" type="directional">
+      <pose frame="">0 -18.818 8 0.75 -0 0</pose>
       <diffuse>0.5 0.5 0.5 1</diffuse>
       <specular>0.1 0.1 0.1 1</specular>
+      <direction>0.1 0.1 -0.9</direction>
       <attenuation>
         <range>20</range>
-        <constant>0.32</constant>
+        <constant>0.5</constant>
         <linear>0.01</linear>
-        <quadratic>0.03</quadratic>
+        <quadratic>0.001</quadratic>
       </attenuation>
       <cast_shadows>0</cast_shadows>
-      <direction>0 0 -1</direction>
     </light>
-    <light name='LivingRoom_CeilingLight_1' type='point'>
-      <pose frame=''>1.194296 -1.589959 2.2 0 -0 0</pose>
+
+
+    <light name="light3" type="directional">
+      <pose frame="">3.9239 1.64974 4 0 1.2 0</pose>
       <diffuse>0.5 0.5 0.5 1</diffuse>
       <specular>0.1 0.1 0.1 1</specular>
+      <direction>0.1 0.1 -0.9</direction>
       <attenuation>
         <range>20</range>
-        <constant>0.05</constant>
+        <constant>0.5</constant>
         <linear>0.01</linear>
-        <quadratic>0.09</quadratic>
+        <quadratic>0.001</quadratic>
       </attenuation>
       <cast_shadows>0</cast_shadows>
-      <direction>0 0 -1</direction>
     </light>
-    <light name='LivingRoom_WallLight_0' type='point'>
-      <pose frame=''>1.76956 -5.444370 2.2 0 -0 0</pose>
-      <diffuse>0.24 0.24 0.24 1</diffuse>
-      <specular>0.1 0.1 0.1 1</specular>
-      <attenuation>
-        <range>20</range>
-        <constant>0.12</constant>
-        <linear>0.00</linear>
-        <quadratic>0.03</quadratic>
-      </attenuation>
-      <cast_shadows>1</cast_shadows>
-      <direction>0 0 -1</direction>
-    </light>
-    <light name='LivingRoom_WallLight_1' type='point'>
-      <pose frame=''>-0.13826 -5.444370 2.2 0 -0 0</pose>
-      <diffuse>0.24 0.24 0.24 1</diffuse>
-      <specular>0.1 0.1 0.1 1</specular>
-      <attenuation>
-        <range>20</range>
-        <constant>0.12</constant>
-        <linear>0.00</linear>
-        <quadratic>0.03</quadratic>
-      </attenuation>
-      <cast_shadows>1</cast_shadows>
-      <direction>0 0 -1</direction>
-    </light>
-    <light name='TV_Light_0' type='point'>
-      <pose frame=''>0.8269 -4.939577 1.1 0 -0 0</pose>
-      <diffuse>0.31372 0.31372 0.34901 1</diffuse>
-      <specular>0.1 0.1 0.1 1</specular>
-      <attenuation>
-        <range>3</range>
-        <constant>0.10</constant>
-        <linear>0.04</linear>
-        <quadratic>0.50</quadratic>
-      </attenuation>
-      <cast_shadows>1</cast_shadows>
-      <direction>0 0 -1</direction>
-    </light>
-    <light name='BedRoom_Portrait_Light_0' type='spot'>
-      <pose frame=''>-6.190379 -1.829697 1.5587 0.3 -0 0.0</pose>
+
+
+    <light name="light5" type="directional">
+      <pose frame="">0.454419 12.4783 5 -0.8 0 0</pose>
       <diffuse>0.5 0.5 0.5 1</diffuse>
       <specular>0.1 0.1 0.1 1</specular>
+      <direction>0.1 0.1 -0.9</direction>
       <attenuation>
         <range>20</range>
-        <constant>0.50</constant>
+        <constant>0.5</constant>
         <linear>0.01</linear>
-        <quadratic>0.00</quadratic>
-      </attenuation>
-      <spot> 
-        <inner_angle>0.6</inner_angle>  
-        <outer_angle>1.0</outer_angle>  
-        <falloff>1.0</falloff> 
-      </spot> 
-      <cast_shadows>1</cast_shadows>
-      <direction>0 0 -1</direction>
-    </light>
-    <light name='BedRoom_CeilingLight_0' type='point'>
-      <pose frame=''>-6.451061 -0.692040 2.000000 0 -0 0</pose>
-      <diffuse>0.5 0.5 0.5 1</diffuse>
-      <specular>0.1 0.1 0.1 1</specular>
-      <attenuation>
-        <range>20</range>
-        <constant>0.32</constant>
-        <linear>0.01</linear>
-        <quadratic>0.03</quadratic>
+        <quadratic>0.001</quadratic>
       </attenuation>
       <cast_shadows>0</cast_shadows>
-      <direction>0 0 -1</direction>
     </light>
-    <light name='Kitchen_CeilingLight_0' type='point'>
-      <pose frame=''>7.8582 -1.5905 2.280000 0 -0 0</pose>
-      <diffuse>0.5 0.5 0.5 1</diffuse>
-      <specular>0.1 0.1 0.1 1</specular>
-      <attenuation>
-        <range>20</range>
-        <constant>0.3</constant>
-        <linear>0.01</linear>
-        <quadratic>0.01</quadratic>
-      </attenuation>
-      <cast_shadows>0</cast_shadows>
-      <direction>0 0 -1</direction>
-    </light>
-     
+  <plugin name="gazebo_link_attacher" filename="libgazebo_link_attacher.so"/>
+  <plugin name="gazebo_link_ur5_attacher" filename="libgazebo_link_ur5_attacher.so"/>
   </world>
 </sdf>

@@ -20,9 +20,20 @@ from std_msgs.msg import Bool
 import yaml
 from mani_stack.srv import Manipulation
 from tf_transformations import quaternion_from_euler, euler_from_quaternion
+from geometry_msgs.msg import Polygon,Point32
+from geometry_msgs.msg import PoseStamped
+from nav2_simple_commander.robot_navigator import BasicNavigator
 global servo_status
 servo_status = 0
 current_joint_states = [0, 0, 0, 0, 0, 0]
+###################globaal variables###################
+global positionToGO
+positionToGO = {
+        'initalPose':{'xyz': [0.0, 0.0, 0.0], 'quaternions': [0.0, 0.0, 0.0, 1.0], 'XYoffsets': [0.0, 0.0],'Yaw':180},
+        'bedroom':{'xyz': [0.0, 0.0, 0.0], 'quaternions': [0.0, 0.0, 0.0, 1.0], 'XYoffsets': [0.0, 0.0],'Yaw':180},
+        'kitchen':{'xyz': [0.0, 2.0, 0.0], 'quaternions': [0.0, 0.0, 0.0, 1.0], 'XYoffsets': [0.0, 0.0],'Yaw':180},
+        'gym':{'xyz': [0.0, 0.0, 0.0], 'quaternions': [0.0, 0.0, 0.0, 1.0], 'XYoffsets': [0.0, 0.0],'Yaw':180},
+        }
 
 def main():
     rclpy.init()
@@ -37,8 +48,25 @@ def main():
     executor.add_node(PoseNode)
     executor_thread = Thread(target=executor.spin, daemon=True, args=())
     executor_thread.start()
+    navigator = BasicNavigator()
     tf_buffer = tf2_ros.buffer.Buffer()
     tf_listener = tf2_ros.TransformListener(tf_buffer, PoseNode)
+    navigator.waitUntilNav2Active()
+    def getGoalPoseStamped(goal):
+        global positionToGO
+        Goal = positionToGO[goal]
+        goalPose = PoseStamped()
+        goalPose.header.frame_id = 'map'
+        goalPose.header.stamp = navigator.get_clock().now().to_msg()
+        goalPose.pose.position.x = Goal['xyz'][0]
+        goalPose.pose.position.y = Goal['xyz'][1]
+        goalPose.pose.position.z = Goal['xyz'][2]
+        goalPose.pose.orientation.x = Goal['quaternions'][0]
+        goalPose.pose.orientation.y = Goal['quaternions'][1]
+        goalPose.pose.orientation.z = Goal['quaternions'][2]
+        goalPose.pose.orientation.w = Goal['quaternions'][3]
+        print(goalPose)
+        return goalPose  
     def getCurrentPose(useEuler=False):
         print("Getting Current Pose")
         tempPose = [0, 0, 0]
@@ -201,6 +229,14 @@ def main():
                 else:
                     counter += 1 
         return True
+    def moveToGoal(goalPose):
+        global positionToGO
+        navigator.goToPose(goalPose)
+        while not navigator.isTaskComplete():
+            time.sleep(0.1)
+        
+        navigator.clearAllCostmaps()
+        return True
     def ManipuationControl(Request, Response):
         if Request.function == "Pose":
             print(" Pose Request Arrived")
@@ -217,6 +253,12 @@ def main():
             print(" Joint Request Arrived")
             goal = Request.goal
             Response.success = jointService(goal)
+            Response.message = "Pose Request Completed"
+        elif Request.function == "Nav2":
+            goal = Request.goal
+            goalPose = getGoalPoseStamped(goal)
+            print("Nav2 Request Arrived")
+            Response.success = moveToGoal(goal)
             Response.message = "Pose Request Completed"
         return Response
     movetopose_control_srv = node.create_service(Manipulation, '/manipulationService', ManipuationControl, callback_group=callback_group)
