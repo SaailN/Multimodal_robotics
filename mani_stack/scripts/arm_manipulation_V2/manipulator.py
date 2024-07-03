@@ -30,9 +30,8 @@ current_joint_states = [0, 0, 0, 0, 0, 0]
 global positionToGO
 positionToGO = {
         'initalPose':{'xyz': [0.0, 0.0, 0.0], 'quaternions': [0.0, 0.0, 0.0, 1.0], 'XYoffsets': [0.0, 0.0],'Yaw':180},
-        'bedroom':{'xyz': [0.0, 0.0, 0.0], 'quaternions': [0.0, 0.0, 0.0, 1.0], 'XYoffsets': [0.0, 0.0],'Yaw':180},
-        'kitchen':{'xyz': [0.0, 2.0, 0.0], 'quaternions': [0.0, 0.0, 0.0, 1.0], 'XYoffsets': [0.0, 0.0],'Yaw':180},
-        'gym':{'xyz': [0.0, 0.0, 0.0], 'quaternions': [0.0, 0.0, 0.0, 1.0], 'XYoffsets': [0.0, 0.0],'Yaw':180},
+        'bedroom':{'xyz': [-7.25, -1.19, 0.0], 'quaternions': [ 0, 0, 0.8939967, -0.4480736 ], 'XYoffsets': [0.0, 0.0],'Yaw':180},
+        'kitchen':{'xyz': [7.79, -3.51, 0.0], 'quaternions': [0.0, 0.0, 0.0, 1.0], 'XYoffsets': [0.0, 0.0],'Yaw':180},
         }
 
 def main():

@@ -46,8 +46,8 @@ def generate_launch_description():
     return LaunchDescription([
         DeclareLaunchArgument(
           'world',
-          default_value=[os.path.join(pkg_models_dir, 'worlds', 'eysipDemo.world'), ''], # Change name of world file if required.
-        #   default_value=[os.path.join(pkg_models_dir, 'worlds', 'house.world'), ''],
+        #   default_value=[os.path.join(pkg_models_dir, 'worlds', 'eysipDemo.world'), ''], # Change name of world file if required.
+          default_value=[os.path.join(pkg_models_dir, 'worlds', 'simpleHouse.world'), ''],
           description='SDF world file'),
         DeclareLaunchArgument(
           'verbose',
