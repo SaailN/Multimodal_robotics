@@ -5,46 +5,43 @@ import time
 import rclpy
 from rclpy.callback_groups import ReentrantCallbackGroup
 from rclpy.node import Node
-from std_msgs.msg import String
 from geometry_msgs.msg import TwistStamped
 from pymoveit2 import MoveIt2, MoveIt2Servo
 from pymoveit2.robots import ur5
 import tf2_ros
 import math
-import re
-from sensor_msgs.msg import JointState
 from std_msgs.msg import Int8
 import transforms3d as tf3d # type: ignore
-import numpy as np
-from std_msgs.msg import Bool
-import yaml
 from mani_stack.srv import Manipulation
 from tf_transformations import quaternion_from_euler, euler_from_quaternion
-from geometry_msgs.msg import Polygon,Point32
-from geometry_msgs.msg import PoseStamped
+from geometry_msgs.msg import PoseStamped,Twist
 from nav2_simple_commander.robot_navigator import BasicNavigator
+from sensor_msgs.msg import Imu
+
 global servo_status
 servo_status = 0
 current_joint_states = [0, 0, 0, 0, 0, 0]
 ###################globaal variables###################
-global positionToGO
+global positionToGO,yaw
 positionToGO = {
-        'initalPose':{'xyz': [0.0, 0.0, 0.0], 'quaternions': [0.0, 0.0, 0.0, 1.0], 'XYoffsets': [0.0, 0.0],'Yaw':180},
-        'bedroom':{'xyz': [-7.25, -1.19, 0.0], 'quaternions': [ 0, 0, 0.8939967, -0.4480736 ], 'XYoffsets': [0.0, 0.0],'Yaw':180},
-        'kitchen':{'xyz': [7.79, -3.51, 0.0], 'quaternions': [0.0, 0.0, 0.0, 1.0], 'XYoffsets': [0.0, 0.0],'Yaw':180},
+        'initalPose':{'xyz': [0.0, 0.0, 0.0], 'quaternions': [0.0, 0.0, 0.0, 1.0], 'XYoffsets': [0.0, 0.0],'Yaw':0,'Zero':True},
+        'bedroom':{'xyz': [-7.25, -1.19, 0.0], 'quaternions': [ 0.0, 0.0, 0.8939967, -0.4480736 ], 'XYoffsets': [0.0, 0.0],'Yaw':180,'Zero':False},
+        'kitchen':{'xyz': [7.79, -3.51, 0.0], 'quaternions': [0.0, 0.0, 0.0, 1.0], 'XYoffsets': [0.0, 0.0],'Yaw':0,'Zero':True},
         }
 
 def main():
     rclpy.init()
     node  = Node("manipulator_node")
     PoseNode = Node("pose_node")
+    imuNode = Node("imu_nodeHELp")
     callback_group = ReentrantCallbackGroup()
     PoseCallbackGroup = ReentrantCallbackGroup()
     # Create MoveIt 2 interface
     # Spin the node in background thread(s)
-    executor = rclpy.executors.MultiThreadedExecutor(3)
+    executor = rclpy.executors.MultiThreadedExecutor(5)
     executor.add_node(node)
     executor.add_node(PoseNode)
+    executor.add_node(imuNode)
     executor_thread = Thread(target=executor.spin, daemon=True, args=())
     executor_thread.start()
     navigator = BasicNavigator()
@@ -66,6 +63,34 @@ def main():
         goalPose.pose.orientation.w = Goal['quaternions'][3]
         print(goalPose)
         return goalPose  
+    def computeAngle(setPoint, Input):
+        error = Input - setPoint                                         
+        output = 0.12 * error
+        
+        if(output > 1.0):
+            output = 1.0
+        elif(output < 0.2 and output > 0.0):
+            output = 0.2
+        elif(output < -1.0):
+            output = -1.0
+        elif(output > -0.2 and output < 0.0):
+            output = -0.2         
+        print("Input",Input,"setPoint",setPoint,"error",error,"output",output)
+        return output*-1.0
+    def normalize_angle(angle,isZero = False):
+        """Normalizes an angle to the range [-π, π].
+    
+        Args:
+            angle: A float representing the angle in radians.
+
+        Returns:
+            A float representing the normalized angle in radians.
+        """
+        if isZero:
+            return angle
+        if angle<0:
+            angle = angle + 360
+        return angle
     def getCurrentPose(useEuler=False):
         print("Getting Current Pose")
         tempPose = [0, 0, 0]
@@ -89,6 +114,14 @@ def main():
             node.get_logger().info("Error in getting current pose: " + str(e))
         print("Current Pose: ", tempPose, tempQuats)
         return tempPose, tempQuats
+    def imu_callback(msg):
+        global yaw
+        quaternion_array = msg.orientation
+        orientation_list = [quaternion_array.x, quaternion_array.y, quaternion_array.z, quaternion_array.w]
+        _, _, yaw = euler_from_quaternion(orientation_list)
+        yaw = math.degrees(yaw)
+        yaw = round(yaw,2)
+        print(yaw)
     moveit_callback_group = ReentrantCallbackGroup()
     ServoCallbackGroup = ReentrantCallbackGroup()
     moveitnode = Node("moveit2_node_pose")
@@ -228,12 +261,25 @@ def main():
                 else:
                     counter += 1 
         return True
-    def moveToGoal(goalPose):
-        global positionToGO
+    def moveToGoal(goal):
+        global positionToGO,yaw
+        def moveBot(linearSpeedX,angularSpeed):
+            twist = Twist()
+            twist.linear.x = linearSpeedX
+            twist.angular.z = angularSpeed
+            imuNode.speedPub.publish(twist)
+        goalPose = getGoalPoseStamped(goal)
         navigator.goToPose(goalPose)
         while not navigator.isTaskComplete():
+            PreviousPose = getCurrentPose()[0]
             time.sleep(0.1)
-        
+        yawRotation = False
+        isZero = positionToGO[goal]['Zero']
+        while (yawRotation == False):
+            angle=computeAngle(int(normalize_angle(positionToGO[goal]['Yaw'],isZero)),int(normalize_angle(yaw,isZero)))
+            moveBot(0.0,angle)
+            yawRotation = True if(int(normalize_angle(positionToGO[goal]['Yaw'],isZero)) == int(normalize_angle(yaw,isZero))) else False
+            time.sleep(0.01)
         navigator.clearAllCostmaps()
         return True
     def ManipuationControl(Request, Response):
@@ -255,13 +301,15 @@ def main():
             Response.message = "Pose Request Completed"
         elif Request.function == "Nav2":
             goal = Request.goal
-            goalPose = getGoalPoseStamped(goal)
             print("Nav2 Request Arrived")
             Response.success = moveToGoal(goal)
             Response.message = "Pose Request Completed"
         return Response
+    imuNode.speedPub = imuNode.create_publisher(Twist, '/cmd_vel', 30)
+    imuNode.imu_sub = imuNode.create_subscription(Imu, '/imu', imu_callback, 10, callback_group=PoseCallbackGroup)
     movetopose_control_srv = node.create_service(Manipulation, '/manipulationService', ManipuationControl, callback_group=callback_group)
     rclpy.spin(node)
+    rclpy.spin(imuNode)
     rclpy.shutdown()
     exit(0)
 
