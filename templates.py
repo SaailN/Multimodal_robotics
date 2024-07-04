@@ -13,26 +13,25 @@ llm_prompt_full = Template(
     """
 PROMPT:
 These are the APIs defined.
-$api_doc
-
-Task - $task
+$api_docs
 
 $scene_desc. $camera_view $scene_dynamic
 $suffix
-
 $error_handling
 $imports
 $code_output
 
-RESPONSE:
-"""
-)
 
-llm_prompt_task = Template(
-    """
+Task - $recorded_task
+
+RESPONSE:
+
+$recorded_response
+
 Task - $task
 
 RESPONSE:
 """
 )
+
 

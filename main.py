@@ -1,6 +1,6 @@
 from robots import *
 from utils import *
-from templates import api_docs, llm_prompt_task
+from templates import api_docs, llm_prompt_full
 import prompts
 import llm_apis
 from rich.console import Console
@@ -31,9 +31,10 @@ class LMP:
         )
         return return_val
 
+   
     def get_prompt(self, task):
 
-        prompt = llm_prompt_task.substitute(
+        prompt = llm_prompt_full.substitute(
             {
                 "task": task,
                 "scene_desc": self.scene_desc,
@@ -44,11 +45,10 @@ class LMP:
                 "code_output": prompts.get_code_output_prompt(config["code_output"]),
                 "suffix": self.suffix,
                 "api_docs": self.get_api_docs(),
+                "recorded_task": prompts.recorded_task,
+                "recorded_response": prompts.recorded_response
             }
         )
-        with open(config["one_shot_file"], "r") as f:
-            one_shot = "".join(f.readlines())
-        prompt = one_shot + prompt
         with open(config["prompt_output_file"], "w") as f:
             f.write(prompt)
         return prompt
@@ -75,7 +75,7 @@ def main():
 
     console.print("[yellow]Printing code. [/yellow]")
     console.print(code)
-    exec(code)
+    # exec(code)
 
 
 if __name__ == "__main__":

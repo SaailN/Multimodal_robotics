@@ -32,6 +32,18 @@ def place_object(x, y, object) -> bool:
 
     return placed["success"]
     
+def move_to(location) -> bool:
+    """
+    Name: move_to
+    Signature: move_to(location: str) -> bool
+    Input: location to move to
+    Output: True if robot moves to location, False otherwise
+    """
+    # requests call to move
+    print("[green]Moving to location")
+    moved = requests.get(constants.config["ros_server"] + "/move_to", params={"location": location}, timeout=1000)
+    moved = moved.json()
+    return moved["success"]
 
 if __name__ == "__main__":
     # Test your code here

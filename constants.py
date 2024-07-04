@@ -1,10 +1,10 @@
 config = {
     "robot": "UR5",  # not using
-    "robot_apis": ["place_object", "pick_object"],
+    "robot_apis": ["place_object", "pick_object", "move_to"],
     "utils_apis": ["detect_objects", "say"],
     "full_view": False,
     "scene": "dynamic",
-    "scene_desc": "The scene has fruits (stacked) and baskets, whose coordinates we do not know. The robot can pick only 1 object at a time.",
+    "scene_desc": "The scene has fruits and baskets placed in different locations. The robot can pick only 1 object at a time.",
     "suffix": "Write code using the provided APIs to perform the task. No comments.",
     "error_handling": True,
     "imports": False,

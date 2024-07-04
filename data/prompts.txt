@@ -1,0 +1,4 @@
+Pick the orange from the bedroom and place in the red basket in the kitchen
+move 2 oranges from bedroom to green basket in kitchen
+take 1 orange from bedroom and place in yellow basket in kitchen. then take 1 banana from kitchen and place in red basket in bedroom
+go to kitchen, place all apples in red basket, and all bananas in yellow basket
