@@ -58,6 +58,7 @@ class armcontroller(Node):
             self.getCoordRequest = Coordinate.Request()
             self.getCoordRequest.x = x
             self.getCoordRequest.y = y
+            self.getCoordRequest.function = "image"
             for i in range(2):
                 getCoordResponse = self.getCoordService.call_async(self.getCoordRequest)
                 rclpy.spin_until_future_complete(self, getCoordResponse)
@@ -76,6 +77,25 @@ class armcontroller(Node):
             self.armControlRequest.function = "Pose"
             armControlResponse = self.armControlService.call_async(self.armControlRequest)
             rclpy.spin_until_future_complete(self, armControlResponse)
+            ###############################getZ#######################################
+            self.armControlRequest = Manipulation.Request()
+            self.armControlRequest.function = "getZ"
+            for i in range(2):
+                armControlResponse = self.armControlService.call_async(self.armControlRequest)
+                rclpy.spin_until_future_complete(self, armControlResponse)
+            x,y,z = getCoordResponse.result().x, getCoordResponse.result().y, armControlResponse.result().z
+            #############################################GETS Z FROM CAMERA############
+            self.getCoordRequest = Coordinate.Request()
+            self.getCoordRequest.x = x
+            self.getCoordRequest.y = y
+            self.getCoordRequest.z = z
+            self.getCoordRequest.function = "Notimage"
+            for i in range(2):
+                getCoordResponse = self.getCoordService.call_async(self.getCoordRequest)
+                rclpy.spin_until_future_complete(self, getCoordResponse)
+                time.sleep(0.5)
+            
+            x,y,z = getCoordResponse.result().x, getCoordResponse.result().y, getCoordResponse.result().z
             ###################################MOVE TO PICK POSITION##################
             time.sleep(1.0)
             self.armControlRequest = Manipulation.Request()

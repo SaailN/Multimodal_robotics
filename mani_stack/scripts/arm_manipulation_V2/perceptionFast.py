@@ -1,29 +1,11 @@
 #!/usr/bin/env python3
-
-
-
-
 import rclpy
-from std_msgs.msg import String
 import sys
 import cv2
 from rclpy.node import Node
-from cv_bridge import CvBridge, CvBridgeError
-from geometry_msgs.msg import TransformStamped
-from sensor_msgs.msg import CompressedImage, Image
-from mani_stack.srv import SendPose
+from cv_bridge import CvBridge
+from sensor_msgs.msg import  Image
 from tf_transformations import quaternion_from_euler, euler_from_quaternion
-from rclpy.callback_groups import ReentrantCallbackGroup
-
-import tf2_ros
-import time
-
-import requests
-import cv2
-import matplotlib.pyplot as plt
-from fastapi import FastAPI
-from fastapi.staticfiles import StaticFiles
-import uvicorn
 
 
 

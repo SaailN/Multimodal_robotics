@@ -118,9 +118,12 @@ def main():
         realX = depth_distance * (sizeCamX - imageX - centerCamX) / focalX
         realY = depth_distance * (sizeCamY - imageY - centerCamY) / focalY
         realZ = depth_distance
-        x,y,z = realX,realY,realZ
+        if Request.function != "image":
+            x,y,z = Request.x,Request.y,Request.z
+        else:
+            x,y,z = realX,realY,realZ
         for i in  range(20):
-            
+
             pose=getCurrentPose()[0]
             time.sleep(0.1)
             

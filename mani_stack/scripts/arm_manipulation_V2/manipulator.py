@@ -17,31 +17,36 @@ from tf_transformations import quaternion_from_euler, euler_from_quaternion
 from geometry_msgs.msg import PoseStamped,Twist
 from nav2_simple_commander.robot_navigator import BasicNavigator
 from sensor_msgs.msg import Imu
+from sensor_msgs.msg import PointCloud2
+from geometry_msgs.msg import Point32
+from sensor_msgs_py import point_cloud2
 
 global servo_status
 servo_status = 0
 current_joint_states = [0, 0, 0, 0, 0, 0]
 ###################globaal variables###################
-global positionToGO,yaw
+global positionToGO,yaw,Xdept, Ydept , Zdept ,Zflag
 positionToGO = {
         'initalPose':{'xyz': [0.0, 0.0, 0.0], 'quaternions': [0.0, 0.0, 0.0, 1.0], 'XYoffsets': [0.0, 0.0],'Yaw':0,'Zero':True},
         'bedroom':{'xyz': [-7.25, -1.19, 0.0], 'quaternions': [ 0.0, 0.0, 0.8939967, -0.4480736 ], 'XYoffsets': [0.0, 0.0],'Yaw':180,'Zero':False},
         'kitchen':{'xyz': [7.79, -3.51, 0.0], 'quaternions': [0.0, 0.0, 0.0, 1.0], 'XYoffsets': [0.0, 0.0],'Yaw':0,'Zero':True},
         }
-
+Z=None
 def main():
     rclpy.init()
     node  = Node("manipulator_node")
     PoseNode = Node("pose_node")
     imuNode = Node("imu_nodeHELp")
+    getZNode = Node("getZNode")
     callback_group = ReentrantCallbackGroup()
     PoseCallbackGroup = ReentrantCallbackGroup()
     # Create MoveIt 2 interface
     # Spin the node in background thread(s)
-    executor = rclpy.executors.MultiThreadedExecutor(5)
+    executor = rclpy.executors.MultiThreadedExecutor(6)
     executor.add_node(node)
     executor.add_node(PoseNode)
     executor.add_node(imuNode)
+    executor.add_node(getZNode)
     executor_thread = Thread(target=executor.spin, daemon=True, args=())
     executor_thread.start()
     navigator = BasicNavigator()
@@ -121,7 +126,7 @@ def main():
         _, _, yaw = euler_from_quaternion(orientation_list)
         yaw = math.degrees(yaw)
         yaw = round(yaw,2)
-        print(yaw)
+        # print(yaw)
     moveit_callback_group = ReentrantCallbackGroup()
     ServoCallbackGroup = ReentrantCallbackGroup()
     moveitnode = Node("moveit2_node_pose")
@@ -282,6 +287,25 @@ def main():
             time.sleep(0.01)
         navigator.clearAllCostmaps()
         return True
+    def convert_pointcloud2_to_xyz_array(msg):
+        """Converts a PointCloud2 message to an array of dictionaries containing {x, y, z} coordinates."""
+        points = []
+        min_x = float('inf')
+        x,y,z = 0,0,0
+        for point in point_cloud2.read_points(msg, skip_nans=True):  # Skip NaN points
+            points.append({'x': point[0], 'y': point[1], 'z': point[2]})
+            x_value = point[2]  # Access the x-coordinate
+            if x_value < min_x:
+                min_x = x_value
+                x,y,z = point[0],point[1],point[2]
+        return x,y,z
+    def point_cloud_callback(msg):
+        global Xdept, Ydept , Zdept ,Zflag
+        # print("Point Cloud Callback")
+        Zflag = False
+        Xdept, Ydept , Zdept = convert_pointcloud2_to_xyz_array(msg)
+        Zflag = True
+        # print("Min Distance: ",Z)
     def ManipuationControl(Request, Response):
         if Request.function == "Pose":
             print(" Pose Request Arrived")
@@ -304,9 +328,19 @@ def main():
             print("Nav2 Request Arrived")
             Response.success = moveToGoal(goal)
             Response.message = "Pose Request Completed"
+        elif Request.function == "GetZ":
+            global Xdept, Ydept , Zdept ,Zflag
+            print("GetZ Request Arrived")
+            Response.success = True
+            Response.message = "Pose Request Completed"
+            while Zflag == False:
+                time.sleep(0.01)
+                print("Waiting for Z")
+            Response.x, Response.y, Response.z = Xdept, Ydept , Zdept
         return Response
-    imuNode.speedPub = imuNode.create_publisher(Twist, '/cmd_vel', 30)
+    imuNode.speedPub = imuNode.create_publisher(Twist, '/cmd_vel', 10)
     imuNode.imu_sub = imuNode.create_subscription(Imu, '/imu', imu_callback, 10, callback_group=PoseCallbackGroup)
+    getZNode.point_cloud_subscription = getZNode.create_subscription(PointCloud2,'/camera/depth/color/points',point_cloud_callback,10,callback_group=ReentrantCallbackGroup())
     movetopose_control_srv = node.create_service(Manipulation, '/manipulationService', ManipuationControl, callback_group=callback_group)
     rclpy.spin(node)
     rclpy.spin(imuNode)
