@@ -53,7 +53,7 @@ def generate_launch_description():
     ompl_config_file = get_package_file(moveit_config_folder_name, 'config/ompl_planning.yaml')
     moveit_controllers_file = get_package_file(moveit_config_folder_name, 'config/moveit_controllers.yaml')
     moveit_servo_file = get_package_file(moveit_config_folder_name, "config/ur_servo.yaml")
-    ros_controllers_file = get_package_file('ebot_ur5', 'config/ros_controllers.yaml')
+    ros_controllers_file = get_package_file('ebot_ur5', 'config/ros2_controllers.yaml')
 
     robot_description_semantic = load_file(srdf_file)
     kinematics_config = load_yaml(kinematics_file)
@@ -80,7 +80,7 @@ def generate_launch_description():
     move_group_node = Node(
         package='moveit_ros_move_group',
         executable='move_group',
-        output='screen',
+        output='log',
         parameters=[
             {
                 'robot_description': robot_description_arm,
@@ -101,7 +101,7 @@ def generate_launch_description():
     servo_params = {"moveit_servo": servo_yaml}
     robot_description_s = {"robot_description": robot_description_arm}
     robot_description_semantic_s = {"robot_description_semantic": robot_description_semantic}
-
+    
     servo_node = Node(
         package="moveit_servo",
         # condition=IfCondition(launch_servo),
@@ -111,9 +111,9 @@ def generate_launch_description():
             robot_description_s,
             robot_description_semantic_s,
         ],
-        output="screen",
+        output="log",
     )
-
+    
     # TF information
     robot_state_publisher_arm = Node(
         name='robot_state_publisher',

@@ -32,6 +32,7 @@ positionToGO = {
         'kitchen':{'xyz': [7.79, -3.51, 0.0], 'quaternions': [0.0, 0.0, 0.0, 1.0], 'XYoffsets': [0.0, 0.0],'Yaw':0,'Zero':True},
         }
 Z=None
+Zflag=False
 def main():
     rclpy.init()
     node  = Node("manipulator_node")
@@ -287,23 +288,33 @@ def main():
             time.sleep(0.01)
         navigator.clearAllCostmaps()
         return True
+    def distance(p1, p2):
+        """Calculates the Euclidean distance between two points."""
+        return ((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2 + (p1[2] - p2[2]) ** 2) ** 0.5
+
     def convert_pointcloud2_to_xyz_array(msg):
         """Converts a PointCloud2 message to an array of dictionaries containing {x, y, z} coordinates."""
         points = []
         min_x = float('inf')
         x,y,z = 0,0,0
+        pose = [0.40 , 0.06 ,0.39]
+        i=0
+        print(len(point_cloud2.read_points(msg, skip_nans=True)))
         for point in point_cloud2.read_points(msg, skip_nans=True):  # Skip NaN points
-            points.append({'x': point[0], 'y': point[1], 'z': point[2]})
-            x_value = point[2]  # Access the x-coordinate
+            x_value = distance(pose,point)  # Access the x-coordinate
             if x_value < min_x:
                 min_x = x_value
-                x,y,z = point[0],point[1],point[2]
+                x,y,z = float(point[0]),float(point[1]),float(point[2])
+        print(z)
         return x,y,z
     def point_cloud_callback(msg):
         global Xdept, Ydept , Zdept ,Zflag
-        # print("Point Cloud Callback")
+        print("Point Cloud Callback")
         Zflag = False
+        start_time = time.time()
         Xdept, Ydept , Zdept = convert_pointcloud2_to_xyz_array(msg)
+        total_time = time.time() - start_time
+        print("Time: ",total_time)
         Zflag = True
         # print("Min Distance: ",Z)
     def ManipuationControl(Request, Response):
@@ -336,7 +347,8 @@ def main():
             while Zflag == False:
                 time.sleep(0.01)
                 print("Waiting for Z")
-            Response.x, Response.y, Response.z = Xdept, Ydept , Zdept
+            print("Z: ",Zdept)
+            Response.x, Response.y, Response.z = float(Xdept), float(Ydept) , float(Zdept)
         return Response
     navigator.setInitialPose(getGoalPoseStamped('initalPose'))
     navigator.waitUntilNav2Active()
