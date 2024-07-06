@@ -27,7 +27,7 @@ current_joint_states = [0, 0, 0, 0, 0, 0]
 ###################globaal variables###################
 global positionToGO,yaw,Xdept, Ydept , Zdept ,Zflag
 positionToGO = {
-        'initalPose':{'xyz': [0.0, 0.0, 0.0], 'quaternions': [0.0, 0.0, 0.0, 1.0], 'XYoffsets': [0.0, 0.0],'Yaw':0,'Zero':True},
+        'initalPose':{'xyz': [5.44, 1.76, 0.0], 'quaternions': [0.0, 0.0, -0.7, 0.7], 'XYoffsets': [0.0, 0.0],'Yaw':0,'Zero':True},
         'bedroom':{'xyz': [-7.25, -1.19, 0.0], 'quaternions': [ 0.0, 0.0, 0.8939967, -0.4480736 ], 'XYoffsets': [0.0, 0.0],'Yaw':180,'Zero':False},
         'kitchen':{'xyz': [7.79, -3.51, 0.0], 'quaternions': [0.0, 0.0, 0.0, 1.0], 'XYoffsets': [0.0, 0.0],'Yaw':0,'Zero':True},
         }
@@ -42,7 +42,7 @@ def main():
     PoseCallbackGroup = ReentrantCallbackGroup()
     # Create MoveIt 2 interface
     # Spin the node in background thread(s)
-    executor = rclpy.executors.MultiThreadedExecutor(6)
+    executor = rclpy.executors.MultiThreadedExecutor(1)
     executor.add_node(node)
     executor.add_node(PoseNode)
     executor.add_node(imuNode)
@@ -52,7 +52,7 @@ def main():
     navigator = BasicNavigator()
     tf_buffer = tf2_ros.buffer.Buffer()
     tf_listener = tf2_ros.TransformListener(tf_buffer, PoseNode)
-    navigator.waitUntilNav2Active()
+    
     def getGoalPoseStamped(goal):
         global positionToGO
         Goal = positionToGO[goal]
@@ -143,7 +143,7 @@ def main():
     moveit2Servo = MoveIt2Servo(
             node=servoNode, frame_id=ur5.base_link_name(), callback_group=ServoCallbackGroup
         )
-    moveitexecutor = rclpy.executors.MultiThreadedExecutor(3)
+    moveitexecutor = rclpy.executors.MultiThreadedExecutor(1)
     moveitexecutor.add_node(moveitnode)
     moveitexecutor.add_node(servoNode)
     moveit_executor_thread = Thread(target=moveitexecutor.spin, daemon=True, args=())
@@ -214,7 +214,7 @@ def main():
         
         while sphericalToleranceAchieved == False:
                 currentPose = getCurrentPose()[0]
-                sphericalToleranceAchieved, magnitude = checkSphericalTolerance(currentPose, TargetPose, 0.03)
+                sphericalToleranceAchieved, magnitude = checkSphericalTolerance(currentPose, TargetPose, 0.04)
                 magnitude *= 3
                 vx, vy, vz = (
                     (TargetPose[0] - currentPose[0]) / magnitude,
@@ -338,9 +338,10 @@ def main():
                 print("Waiting for Z")
             Response.x, Response.y, Response.z = Xdept, Ydept , Zdept
         return Response
+    navigator.setInitialPose(getGoalPoseStamped('initalPose'))
+    navigator.waitUntilNav2Active()
     imuNode.speedPub = imuNode.create_publisher(Twist, '/cmd_vel', 10)
     imuNode.imu_sub = imuNode.create_subscription(Imu, '/imu', imu_callback, 10, callback_group=PoseCallbackGroup)
-    getZNode.point_cloud_subscription = getZNode.create_subscription(PointCloud2,'/camera/depth/color/points',point_cloud_callback,10,callback_group=ReentrantCallbackGroup())
     movetopose_control_srv = node.create_service(Manipulation, '/manipulationService', ManipuationControl, callback_group=callback_group)
     rclpy.spin(node)
     rclpy.spin(imuNode)

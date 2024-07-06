@@ -52,7 +52,7 @@ def main():
         moveit2.add_collision_mesh(
         filepath=floor,
         id="Floor",
-        position=[2.1, 0.00, 0.05],
+        position=[2.1, 0.00, 0.1],
         quat_xyzw=[0.0, 0.0, 0.0, 1.0],
         frame_id="base_link",
         )

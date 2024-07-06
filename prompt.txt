@@ -1,0 +1,58 @@
+
+PROMPT:
+These are the APIs defined.
+
+Robot APIs:
+        
+    Name: place_object
+    Signature: place_object(x: float, y: float, object: str) -> bool
+    Input: x, y coordinates of object to place, and the name of the object being placed
+    Output: True if object is placed, False otherwise
+    
+    Name: pick_object
+    Signature: pick_object(x: float, y: float, object: str) -> bool
+    Input: x, y coordinates of object to pick, and name of the object being picked
+    Output: True if object is picked, False otherwise
+    
+    Name: move_to
+    Signature: move_to(location: str) -> bool
+    Input: location to move to
+    Output: True if robot moves to location, False otherwise
+    
+Utils APIs:
+        
+    Name: detect_objects
+    Description: Returns the coordinates of the objects queried by the input parameter objects
+    Signature: detect_objects(objects: list) -> dict
+    Input: None the coordinates of the objects queried by the input parameter objects
+    Signature: detect_objects(objects: list) -> dict
+    Input: None
+    Output dictionary of the format
+    {
+        'object': 'object_name',
+        'location': {"x": 0.0, "y": 0.0}
+    }
+    
+    Name: say
+    Signature: say(text: str) -> None
+    Input: text to say
+    Output: None
+    
+
+
+The scene has fruits and baskets placed in different locations. The robot can pick only 1 object at a time.. The camera may not see the entire scene at once. The scene is dynamic.
+Write code using the provided APIs to perform the task. No comments.
+Error handling is required.
+No import statements required.
+Code output is required.
+
+
+Task - Pick the orange from the bedroom and place in the red basket in the kitchen
+
+RESPONSE: 
+
+
+
+Task - pick up the orange in the kitchen and place in the red basket in the bedroom
+
+RESPONSE:
