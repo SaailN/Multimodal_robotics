@@ -29,7 +29,7 @@ global positionToGO,yaw,Xdept, Ydept , Zdept ,Zflag
 positionToGO = {
         'initalPose':{'xyz': [5.44, 1.76, 0.0], 'quaternions': [0.0, 0.0, -0.7, 0.7], 'XYoffsets': [0.0, 0.0],'Yaw':0,'Zero':True},
         'bedroom':{'xyz': [-7.25, -1.19, 0.0], 'quaternions': [ 0.0, 0.0, 0.8939967, -0.4480736 ], 'XYoffsets': [0.0, 0.0],'Yaw':180,'Zero':False},
-        'kitchen':{'xyz': [7.79, -3.51, 0.0], 'quaternions': [0.0, 0.0, 0.0, 1.0], 'XYoffsets': [0.0, 0.0],'Yaw':0,'Zero':True},
+        'kitchen':{'xyz': [7.78, -3.54, 0.0], 'quaternions': [0.0, 0.0, 0.0, 1.0], 'XYoffsets': [0.0, 0.0],'Yaw':0,'Zero':True},
         }
 Z=None
 Zflag=False

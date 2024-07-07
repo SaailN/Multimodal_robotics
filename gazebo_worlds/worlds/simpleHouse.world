@@ -127,10 +127,24 @@
     </include>
     
     <include>
+    <uri>model://apple</uri>
+    <name>apple</name>
+      <pose>8.74 -3.43 0.95 0 0 0</pose>
+    </include>
+    
+
+    <include>
     <uri>model://orange</uri>
     <name>orange</name>
-      <pose>8.76 -3.71 0.95 0 0 0</pose>
+      <pose>8.78 -3.66 0.95 0 0 0</pose>
     </include>
+
+    <include>
+    <uri>model://basket</uri>
+    <name>fruit_basket</name>
+      <pose>8.96 -3.31 0.95 0 0 0</pose>
+    </include>
+    
 
     <include>
     <uri>model://yellow_tray</uri>
