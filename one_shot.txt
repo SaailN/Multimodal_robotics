@@ -1,0 +1,110 @@
+PROMPT:
+These are the APIs defined.
+
+Robot APIs:
+        
+    Name: place_object
+    Signature: place_object(x: float, y: float, object: str) -> bool
+    Input: x, y coordinates of object to place, and the name of the object being placed
+    Output: True if object is placed, False otherwise
+    
+    Name: pick_object
+    Signature: pick_object(x: float, y: float, object: str) -> bool
+    Input: x, y coordinates of object to pick, and name of the object being picked
+    Output: True if object is picked, False otherwise
+    
+Utils APIs:
+        
+    Name: detect_objects
+    Description: Returns the coordinates of the objects queried by the input parameter objects
+    Signature: detect_objects(objects: list) -> dict
+    Input: None the coordinates of the objects queried by the input parameter objects
+    Signature: detect_objects(objects: list) -> dict
+    Input: None
+    Output dictionary of the format
+    {
+        'object': 'object_name',
+        'location': {"x": 0.0, "y": 0.0}
+    }
+    
+    Name: say
+    Signature: say(text: str) -> None
+    Input: text to say
+    Output: None
+    
+
+
+Task - pick orange and place in red basket
+
+The scene has fruits (stacked) and baskets, whose coordinates we do not know. The robot can pick only 1 object at a time. Detect all fruits and baskets in one go.
+Write code using the provided APIs to perform the task. No comments.
+
+Error handling is required.
+No import statements required.
+Code output is required.
+
+RESPONSE:
+```
+def pick_and_place_orange_in_basket():
+
+ """Picks an orange and places it in a red basket."""
+
+
+
+ # Find all objects in the scene
+
+ objects = detect_objects(["orange", "red basket"])
+
+
+
+ # Find the orange and red basket
+
+ for obj in objects:
+
+  if obj["object"] == "orange":
+
+   orange_location = obj["location"]
+
+  elif obj["object"] == "red_basket":
+
+   basket_location = obj["location"]
+
+
+
+ # Pick the orange
+
+ if orange_location:
+
+  if pick_object(orange_location["x"], orange_location["y"], "orange"):
+
+   # Place the orange in the basket
+
+   if basket_location:
+
+    if place_object(basket_location["x"], basket_location["y"], "orange"):
+
+     say("Successfully placed orange in the red basket!")
+
+    else:
+
+     say("Failed to place orange in the basket. Basket might be full or unreachable.")
+
+   else:
+
+    say("Could not find the red basket.")
+
+  else:
+
+   say("Failed to pick the orange. It might be unreachable or not visible.")
+
+ else:
+
+  say("Could not find any oranges in the scene.")
+
+
+
+# Run the function
+
+pick_and_place_orange_in_basket()
+
+```
