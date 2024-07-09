@@ -8,7 +8,11 @@ import rclpy
 from rclpy.callback_groups import ReentrantCallbackGroup
 from rclpy.node import Node
 from pymoveit2 import MoveIt2
+from pymoveit2 import MoveIt2
 from pymoveit2.robots import ur5
+from mani_stack.srv import Manipulation
+
+
 from mani_stack.srv import Manipulation
 
 
@@ -43,6 +47,13 @@ def main():
         # quat_xyzw=[0.0, 0.0, 0.0, 1.0],
         # frame_id="base_link",
         # )
+        # moveit2.add_collision_mesh(
+        # filepath=floor,
+        # id="Floor",
+        # position=[2.1, 0.00, 0.1],
+        # quat_xyzw=[0.0, 0.0, 0.0, 1.0],
+        # frame_id="base_link",
+        # )
         
         time.sleep(0.5)
         moveit2.add_collision_mesh(
@@ -53,7 +64,6 @@ def main():
         frame_id="base_link",
         )
         time.sleep(0.5)
-        print("Floor adding...")
     def addmesh(req, res):
         z = req.z
         if req.function == "add":

@@ -242,6 +242,7 @@ def main():
     def jointService(goal):
         homePoseStates = [0.0,-2.79,1.47,-1.1,-1.57,3.15]
         basketjointStates = [-1.07,-1.21,1.08,-1.67,-1.63,3.15]
+        prePoseJointStates = [0.20,-1.25,1.64,1.98,-1.50,3.15]
         jointNode = Node("jointNode")
         
         goaljoints = [0.0,0.0,0.0,0.0,0.0,0.0]
@@ -249,6 +250,8 @@ def main():
             goaljoints=homePoseStates 
         elif goal == "basket":
             goaljoints=basketjointStates
+        elif goal == "prePose":
+            goal == prePoseJointStates
         counter = 0
         PreviousPose = getCurrentPose()[0]
         PreviousPose = [round(PreviousPose[0], 2), round(PreviousPose[1], 2), round(PreviousPose[2], 2)]
