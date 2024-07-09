@@ -27,11 +27,12 @@ current_joint_states = [0, 0, 0, 0, 0, 0]
 ###################globaal variables###################
 global positionToGO,yaw,Xdept, Ydept , Zdept ,Zflag
 positionToGO = {
-        'initalPose':{'xyz': [0.0, 0.0, 0.0], 'quaternions': [0.0, 0.0, 0.0, 1.0], 'XYoffsets': [0.0, 0.0],'Yaw':0,'Zero':True},
+        'initalPose':{'xyz': [5.44, 1.76, 0.0], 'quaternions': [0.0, 0.0, -0.7, 0.7], 'XYoffsets': [0.0, 0.0],'Yaw':0,'Zero':True},
         'bedroom':{'xyz': [-7.25, -1.19, 0.0], 'quaternions': [ 0.0, 0.0, 0.8939967, -0.4480736 ], 'XYoffsets': [0.0, 0.0],'Yaw':180,'Zero':False},
-        'kitchen':{'xyz': [7.79, -3.51, 0.0], 'quaternions': [0.0, 0.0, 0.0, 1.0], 'XYoffsets': [0.0, 0.0],'Yaw':0,'Zero':True},
+        'kitchen':{'xyz': [7.78, -3.54, 0.0], 'quaternions': [0.0, 0.0, 0.0, 1.0], 'XYoffsets': [0.0, 0.0],'Yaw':0,'Zero':True},
         }
 Z=None
+Zflag=False
 def main():
     rclpy.init()
     node  = Node("manipulator_node")
@@ -42,7 +43,7 @@ def main():
     PoseCallbackGroup = ReentrantCallbackGroup()
     # Create MoveIt 2 interface
     # Spin the node in background thread(s)
-    executor = rclpy.executors.MultiThreadedExecutor(6)
+    executor = rclpy.executors.MultiThreadedExecutor(1)
     executor.add_node(node)
     executor.add_node(PoseNode)
     executor.add_node(imuNode)
@@ -52,7 +53,7 @@ def main():
     navigator = BasicNavigator()
     tf_buffer = tf2_ros.buffer.Buffer()
     tf_listener = tf2_ros.TransformListener(tf_buffer, PoseNode)
-    navigator.waitUntilNav2Active()
+    
     def getGoalPoseStamped(goal):
         global positionToGO
         Goal = positionToGO[goal]
@@ -143,7 +144,7 @@ def main():
     moveit2Servo = MoveIt2Servo(
             node=servoNode, frame_id=ur5.base_link_name(), callback_group=ServoCallbackGroup
         )
-    moveitexecutor = rclpy.executors.MultiThreadedExecutor(3)
+    moveitexecutor = rclpy.executors.MultiThreadedExecutor(1)
     moveitexecutor.add_node(moveitnode)
     moveitexecutor.add_node(servoNode)
     moveit_executor_thread = Thread(target=moveitexecutor.spin, daemon=True, args=())
@@ -214,7 +215,7 @@ def main():
         
         while sphericalToleranceAchieved == False:
                 currentPose = getCurrentPose()[0]
-                sphericalToleranceAchieved, magnitude = checkSphericalTolerance(currentPose, TargetPose, 0.03)
+                sphericalToleranceAchieved, magnitude = checkSphericalTolerance(currentPose, TargetPose, 0.04)
                 magnitude *= 3
                 vx, vy, vz = (
                     (TargetPose[0] - currentPose[0]) / magnitude,
@@ -241,6 +242,7 @@ def main():
     def jointService(goal):
         homePoseStates = [0.0,-2.79,1.47,-1.1,-1.57,3.15]
         basketjointStates = [-1.07,-1.21,1.08,-1.67,-1.63,3.15]
+        prePoseJointStates = [0.20,-1.25,1.64,1.98,-1.50,3.15]
         jointNode = Node("jointNode")
         
         goaljoints = [0.0,0.0,0.0,0.0,0.0,0.0]
@@ -248,6 +250,8 @@ def main():
             goaljoints=homePoseStates 
         elif goal == "basket":
             goaljoints=basketjointStates
+        elif goal == "prePose":
+            goal == prePoseJointStates
         counter = 0
         PreviousPose = getCurrentPose()[0]
         PreviousPose = [round(PreviousPose[0], 2), round(PreviousPose[1], 2), round(PreviousPose[2], 2)]
@@ -287,23 +291,33 @@ def main():
             time.sleep(0.01)
         navigator.clearAllCostmaps()
         return True
+    def distance(p1, p2):
+        """Calculates the Euclidean distance between two points."""
+        return ((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2 + (p1[2] - p2[2]) ** 2) ** 0.5
+
     def convert_pointcloud2_to_xyz_array(msg):
         """Converts a PointCloud2 message to an array of dictionaries containing {x, y, z} coordinates."""
         points = []
         min_x = float('inf')
         x,y,z = 0,0,0
+        pose = [0.40 , 0.06 ,0.39]
+        i=0
+        print(len(point_cloud2.read_points(msg, skip_nans=True)))
         for point in point_cloud2.read_points(msg, skip_nans=True):  # Skip NaN points
-            points.append({'x': point[0], 'y': point[1], 'z': point[2]})
-            x_value = point[2]  # Access the x-coordinate
+            x_value = distance(pose,point)  # Access the x-coordinate
             if x_value < min_x:
                 min_x = x_value
-                x,y,z = point[0],point[1],point[2]
+                x,y,z = float(point[0]),float(point[1]),float(point[2])
+        print(z)
         return x,y,z
     def point_cloud_callback(msg):
         global Xdept, Ydept , Zdept ,Zflag
-        # print("Point Cloud Callback")
+        print("Point Cloud Callback")
         Zflag = False
+        start_time = time.time()
         Xdept, Ydept , Zdept = convert_pointcloud2_to_xyz_array(msg)
+        total_time = time.time() - start_time
+        print("Time: ",total_time)
         Zflag = True
         # print("Min Distance: ",Z)
     def ManipuationControl(Request, Response):
@@ -336,11 +350,13 @@ def main():
             while Zflag == False:
                 time.sleep(0.01)
                 print("Waiting for Z")
-            Response.x, Response.y, Response.z = Xdept, Ydept , Zdept
+            print("Z: ",Zdept)
+            Response.x, Response.y, Response.z = float(Xdept), float(Ydept) , float(Zdept)
         return Response
+    navigator.setInitialPose(getGoalPoseStamped('initalPose'))
+    navigator.waitUntilNav2Active()
     imuNode.speedPub = imuNode.create_publisher(Twist, '/cmd_vel', 10)
     imuNode.imu_sub = imuNode.create_subscription(Imu, '/imu', imu_callback, 10, callback_group=PoseCallbackGroup)
-    getZNode.point_cloud_subscription = getZNode.create_subscription(PointCloud2,'/camera/depth/color/points',point_cloud_callback,10,callback_group=ReentrantCallbackGroup())
     movetopose_control_srv = node.create_service(Manipulation, '/manipulationService', ManipuationControl, callback_group=callback_group)
     rclpy.spin(node)
     rclpy.spin(imuNode)

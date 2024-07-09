@@ -7,24 +7,15 @@ import time
 import rclpy
 from rclpy.callback_groups import ReentrantCallbackGroup
 from rclpy.node import Node
-from std_msgs.msg import String
-from geometry_msgs.msg import TwistStamped
-from pymoveit2 import MoveIt2, MoveIt2Servo
+from pymoveit2 import MoveIt2
+from pymoveit2 import MoveIt2
 from pymoveit2.robots import ur5
-import tf2_ros
-import math
-import re
-from sensor_msgs.msg import JointState
-from std_msgs.msg import Int8
-import transforms3d as tf3d # type: ignore
-import numpy as np
-from std_msgs.msg import Bool
-import yaml
-
-from tf_transformations import quaternion_from_euler, euler_from_quaternion
+from mani_stack.srv import Manipulation
 
 
-from linkattacher_msgs.srv import AttachLink, DetachLink
+from mani_stack.srv import Manipulation
+
+
 
 def main():
     rclpy.init()
@@ -49,13 +40,20 @@ def main():
     executor_thread.start()
     
     for i in range(1, 4):
-        moveit2.add_collision_mesh(
-        filepath=floor,
-        id="Floor",
-        position=[2.1, 0.00, 0.05],
-        quat_xyzw=[0.0, 0.0, 0.0, 1.0],
-        frame_id="base_link",
-        )
+        # moveit2.add_collision_mesh(
+        # filepath=floor,
+        # id="Floor",
+        # position=[2.1, 0.00, 0.1],
+        # quat_xyzw=[0.0, 0.0, 0.0, 1.0],
+        # frame_id="base_link",
+        # )
+        # moveit2.add_collision_mesh(
+        # filepath=floor,
+        # id="Floor",
+        # position=[2.1, 0.00, 0.1],
+        # quat_xyzw=[0.0, 0.0, 0.0, 1.0],
+        # frame_id="base_link",
+        # )
         
         time.sleep(0.5)
         moveit2.add_collision_mesh(
@@ -66,8 +64,27 @@ def main():
         frame_id="base_link",
         )
         time.sleep(0.5)
-        
-        print("Floor adding...")
+    def addmesh(req, res):
+        z = req.z
+        if req.function == "add":
+            print("Adding mesh...")
+            for i in range(1, 4):
+                moveit2.add_collision_mesh(
+                filepath=floor,
+                id="Floor",
+                position=[2.1, 0.00, z],
+                quat_xyzw=[0.0, 0.0, 0.0, 1.0],
+                frame_id="base_link",
+                )
+            res.message = "Mesh added"
+        elif req.function == "remove":
+            moveit2.remove_collision_mesh(id="Floor")
+            print("Removing mesh...")
+            res.message = "Mesh removed"
+        res.success = True
+        return res
+    node.create_service(Manipulation, '/addmeshobjectt', addmesh, callback_group=callback_group)
+    rclpy.spin(node)
     rclpy.shutdown()
     exit(0)
 

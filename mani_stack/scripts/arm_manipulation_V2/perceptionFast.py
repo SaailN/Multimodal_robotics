@@ -105,7 +105,7 @@ class tf(Node):
             # file = open('imageBase64.txt', 'wb')
             # file.write(image_bytes)
             # file.close()
-            cv2.imwrite('/home/gauresh/ros2_ws/src/mani_stack/static/image.jpg', image)
+            cv2.imwrite('/home/jalan/dev/ros2ws/src/23-Multimodal-Genrative-AI-for-Robotics-application/mani_stack/static/image.jpg', image)
             cv2.imshow("color",self.cv_image)
             cv2.waitKey(1)
         except Exception as e:
