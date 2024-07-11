@@ -59,6 +59,7 @@ class armcontroller(Node):
 
         @app.get("/pick_object")
         async def pick_object(x: float, y: float,object: str):
+            time.sleep(5.0)
             self.objectName = object
             self.get_logger().info(self.objectName )
             self.get_logger().info(self.objectName )
@@ -66,12 +67,12 @@ class armcontroller(Node):
             self.getCoordRequest = Coordinate.Request()
             self.getCoordRequest.x = x
             self.getCoordRequest.y = y
-            self.getCoordRequest.function = "image"
             for i in range(2):
                 getCoordResponse = self.getCoordService.call_async(self.getCoordRequest)
                 rclpy.spin_until_future_complete(self, getCoordResponse)
                 time.sleep(0.2)
             ####################################add mesh################################
+            x,y,z = getCoordResponse.result().x, getCoordResponse.result().y, getCoordResponse.result().z
             self.meshRequest = Manipulation.Request()
             self.meshRequest.z = z-0.1
             self.meshRequest.function = "add"
@@ -79,30 +80,26 @@ class armcontroller(Node):
             rclpy.spin_until_future_complete(self, meshResponse)
             ####################################add mesh################################
             # #####################################JOINT TO pre pose object#################
-            self.armControlRequest = Manipulation.Request()
-            self.armControlRequest.function = "Joint"
-            self.armControlRequest.goal = "prePose"
-            armControlResponse = self.armControlService.call_async(self.armControlRequest)
-            rclpy.spin_until_future_complete(self, armControlResponse)
+            
             
             ##########################GETS COORDINATES FROM CAMERA#####################
-            x,y,z = getCoordResponse.result().x, getCoordResponse.result().y, getCoordResponse.result().z
+            
             print("x,y,z",x,y,z)
             self.armControlRequest = Manipulation.Request()
             self.armControlRequest.x  = x 
             self.armControlRequest.y  = y
             self.armControlRequest.z  = z+0.2
-            self.armControlRequest.xr = 0.71
-            self.armControlRequest.yr = 0.70
-            self.armControlRequest.zr = 0.02
-            self.armControlRequest.wr = 0.02
+            self.armControlRequest.xr = 1.0
+            self.armControlRequest.yr = 0.0
+            self.armControlRequest.zr = 0.0
+            self.armControlRequest.wr = 0.0
             self.armControlRequest.function = "Pose"
             armControlResponse = self.armControlService.call_async(self.armControlRequest)
             rclpy.spin_until_future_complete(self, armControlResponse)
             
             
             ###################################MOVE TO PICK POSITION##################
-            time.sleep(1.0)
+            time.sleep(5)
             self.armControlRequest = Manipulation.Request()
             self.armControlRequest.x  = x 
             self.armControlRequest.y  = y
@@ -115,6 +112,7 @@ class armcontroller(Node):
             time.sleep(1.0)
             print(self.objectName, "has been picked")
             ######################################SERVO TO PICK POSITION#################
+            
             self.armControlRequest = Manipulation.Request()
             self.armControlRequest.x  = x 
             self.armControlRequest.y  = y
@@ -151,10 +149,10 @@ class armcontroller(Node):
             self.getCoordRequest = Coordinate.Request()
             self.getCoordRequest.x = x
             self.getCoordRequest.y = y
-            for i in range(3):
+            for i in range(2):
                 getCoordResponse = self.getCoordService.call_async(self.getCoordRequest)
                 rclpy.spin_until_future_complete(self, getCoordResponse)
-                time.sleep(0.5)
+                time.sleep(0.2)
             ##########################GETS COORDINATES FROM CAMERA#####################
             x,y,z = getCoordResponse.result().x, getCoordResponse.result().y, getCoordResponse.result().z
             print("x,y,z",x,y,z+0.2)
@@ -171,6 +169,7 @@ class armcontroller(Node):
             rclpy.spin_until_future_complete(self, armControlResponse)
 
             #####################################Call LINKK ATTACHER#####################
+            time.sleep(10)
             self.controlGripper("OFF", self.objectName)
             
             ######################################SERVO TO PICK POSITION#################
@@ -204,6 +203,7 @@ class armcontroller(Node):
             self.armControlRequest.goal = location
             armControlResponse = self.armControlService.call_async(self.armControlRequest)
             rclpy.spin_until_future_complete(self, armControlResponse)
+            time.sleep(5.0)
             return {
                 "success": armControlResponse.result().success,
                 "message": armControlResponse.result().message

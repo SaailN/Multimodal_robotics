@@ -39,7 +39,9 @@ This urdf is optimized to work only with gazebo simulator.
 
 
 <!--   base of the robot -->
+
   <link name="ebot_base_link">
+
   </link>
 
     <!-- BASE LINK -->

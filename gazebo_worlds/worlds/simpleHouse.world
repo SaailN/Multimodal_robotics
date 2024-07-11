@@ -135,19 +135,29 @@
     <include>
     <uri>model://yellow_tray</uri>
     <name>yellow_tray</name>
-      <pose> -8.00 -1.57 1.27 0 0 0</pose>
+      <pose> -7.92 -1.57 1.27 0 0 0</pose>
     </include> 
     
     <include>
     <uri>model://green_tray</uri>
     <name>green_tray</name>
-      <pose>-8.00 -1.12 1.27 0 0 0</pose>
+      <pose>-7.92 -1.12 1.27 0 0 0</pose>
     </include> 
     
     <include>
     <uri>model://aws_robomaker_residential_CoffeeTable_01</uri>
     <name>CoffeTable</name>
       <pose>1.86 -1.05 0.405 0 0 0</pose>
+    </include> 
+    <include>
+    <uri>model://aws_robomaker_residential_CoffeeTable_01</uri>
+    <name>CoffeTable1</name>
+      <pose>-2.66 -3.02 0.40 0 0 1.62</pose>
+    </include> 
+    <include>
+    <uri>model://aws_robomaker_residential_CoffeeTable_01</uri>
+    <name>CoffeTable2</name>
+      <pose>-2.66 -2.50 0.4 0 0 1.61</pose>
     </include> 
   <plugin name="gazebo_link_attacher" filename="libgazebo_link_attacher.so"/>
   <plugin name="gazebo_link_ur5_attacher" filename="libgazebo_link_ur5_attacher.so"/>

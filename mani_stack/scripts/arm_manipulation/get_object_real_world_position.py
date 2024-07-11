@@ -118,10 +118,7 @@ def main():
         realX = depth_distance * (sizeCamX - imageX - centerCamX) / focalX
         realY = depth_distance * (sizeCamY - imageY - centerCamY) / focalY
         realZ = depth_distance
-        if Request.function != "image":
-            x,y,z = Request.x,Request.y,Request.z
-        else:
-            x,y,z = realX,realY,realZ
+        x,y,z = realX,realY,realZ
         for i in  range(20):
 
             pose=getCurrentPose()[0]
@@ -131,6 +128,7 @@ def main():
         Response.success = True
         Response.message = "Success"
         node.get_logger().info("Request done with Succes")
+        node.get_logger().info(str(Response.x)+" "+str(Response.y)+" "+str(Response.z))
         return Response
     real_world_coordinate_srv = node.create_service(Coordinate, '/coords', processImage, callback_group=callback_group)
     

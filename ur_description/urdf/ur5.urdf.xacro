@@ -27,12 +27,12 @@
 
     <!-- Inertia parameters -->
     <xacro:property name="base_mass" value="4.0" />  <!-- This mass might be incorrect -->
-    <xacro:property name="shoulder_mass" value="3.7000" />
-    <xacro:property name="upper_arm_mass" value="8.3930" />
-    <xacro:property name="forearm_mass" value="2.2750" />
-    <xacro:property name="wrist_1_mass" value="1.2190" />
-    <xacro:property name="wrist_2_mass" value="1.2190" />
-    <xacro:property name="wrist_3_mass" value="0.1879" />
+    <xacro:property name="shoulder_mass" value="0.01" />
+    <xacro:property name="upper_arm_mass" value="0.01" />
+    <xacro:property name="forearm_mass" value="0.01" />
+    <xacro:property name="wrist_1_mass" value="0.01" />
+    <xacro:property name="wrist_2_mass" value="0.01" />
+    <xacro:property name="wrist_3_mass" value="0.01" />
 
     <xacro:property name="shoulder_cog" value="0.0 0.00193 -0.02561" />
     <xacro:property name="upper_arm_cog" value="0.0 -0.024201 0.2125" />
