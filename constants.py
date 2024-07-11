@@ -13,6 +13,7 @@ config = {
     "prompt_output_file": "prompt.txt",
     "code_output_file": "output.py",
     "ros_server": "http://localhost:8000",
+    "paligemma_server": "https://redbird-mutual-hardly.ngrok-free.app/image/",
 }
 
 

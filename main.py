@@ -7,8 +7,11 @@ from rich.console import Console
 from constants import config
 from robots import *
 from utils import *
-import whisper 
+import wave
 import pyaudio
+import whisper
+import sys
+
 # Audio stream configuration
 FORMAT = pyaudio.paInt16
 CHANNELS = 1 if sys.platform == 'darwin' else 2
@@ -18,7 +21,7 @@ CHUNK = 1024
 p = pyaudio.PyAudio()
 stream = p.open(format=FORMAT, channels=CHANNELS, rate=RATE, input=True)
 
-model = whisper.load_model("base")
+model = whisper.load_model("small")
 
 class LMP:
     def __init__(self, config):
@@ -73,24 +76,27 @@ def main():
     console.print("[green]LLM API initialized successfully. [/green]")
 
     lmp = LMP(config)
+    # while True:
+    #     task=console.input("Input task: \n")
+    # task = "go to kitchen and pick up orange"
+    # try:
+    #     with wave.open('output.wav', 'wb') as wf:
+    #         wf.setnchannels(CHANNELS)
+    #         wf.setsampwidth(p.get_sample_size(FORMAT))
+    #         wf.setframerate(RATE)
 
-    console.print("Input task: \n")
-    try:
-        with wave.open('output.wav', 'wb') as wf:
-            wf.setnchannels(CHANNELS)
-            wf.setsampwidth(p.get_sample_size(FORMAT))
-            wf.setframerate(RATE)
+    #         console.print('[red]Recording...[/red]')
+    #         while True:
+    #             wf.writeframes(stream.read(CHUNK, exception_on_overflow=False))
 
-            console.print('[red]Recording...[/red]')
-            while True:
-                wf.writeframes(stream.read(CHUNK, exception_on_overflow=False))
+    # except KeyboardInterrupt:
+    #     stream.close()
+    #     p.terminate()
+    #     console.print("[red]Recording stopped[/red]")
 
-    except KeyboardInterrupt:
-        stream.close()
-        p.terminate()
-        console.print("[red]Recording stopped[/red]")
-
-    task = model.transcribe('output.wav')["text"]
+    # task = model.transcribe('output.wav')["text"]
+    # console.print("[yellow]Task: [/yellow]" + task)
+    task = console.input("[yellow]Enter Task:")
     prompt = lmp.get_prompt(task)
 
     console.print("[green]Prompt generated successfully. [/green]")

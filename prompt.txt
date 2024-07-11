@@ -83,6 +83,6 @@ def complete_task():
 complete_task()
 
 
-Task - pick up orange
+Task - pick orange from kitchen/bedroom, and after you find it, place it on the red basket in the another room
 
 RESPONSE:

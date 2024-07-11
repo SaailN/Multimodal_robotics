@@ -12,10 +12,10 @@ from transformers import AutoProcessor, Owlv2ForObjectDetection
 from transformers.utils.constants import OPENAI_CLIP_MEAN, OPENAI_CLIP_STD
 from robots import *
 import matplotlib.pyplot as plt
-
-
-processor = AutoProcessor.from_pretrained("google/owlv2-base-patch16-ensemble")
-model = Owlv2ForObjectDetection.from_pretrained("google/owlv2-base-patch16-ensemble")
+import time
+import cv2
+# processor = AutoProcessor.from_pretrained("google/owlv2-base-patch16-ensemble")
+# model = Owlv2ForObjectDetection.from_pretrained("google/owlv2-base-patch16-ensemble")
 
 def say(text):
     """
@@ -45,51 +45,46 @@ def detect_objects(objects=[]):
     # get image  from url
     # Assuming constants.config["ros_server"] is properly defined
     print("[red]Fetching image...")
+    time.sleep(5)
     image_url = constants.config["ros_server"] + "/static/image.jpg"
 
     while True:
         try:
             image = requests.get(image_url, stream=True, timeout=10)
-            image = Image.open(image.raw)
+            image = np.asarray(Image.open(image.raw))
             break
         except:
             continue
-
-
     print("[green]Image fetched successfully.")
 
-    inputs = processor(text=objects, images=image, return_tensors="pt")
+    _, buffer = cv2.imencode('.jpg', image)
+    image_bytes = buffer.tobytes()
 
-    with torch.no_grad():
-        outputs = model(**inputs)    
-
-    print("[green]Starting object detection.")
-    def get_preprocessed_image(pixel_values):
-        pixel_values = pixel_values.squeeze().numpy()
-        unnormalized_image = (pixel_values * np.array(OPENAI_CLIP_STD)[:, None, None]) + np.array(OPENAI_CLIP_MEAN)[:, None, None]
-        unnormalized_image = (unnormalized_image * 255).astype(np.uint8)
-        unnormalized_image = np.moveaxis(unnormalized_image, 0, -1)
-        unnormalized_image = Image.fromarray(unnormalized_image)
-        return unnormalized_image
-
-    unnormalized_image = get_preprocessed_image(inputs.pixel_values)
-    target_sizes = torch.Tensor([unnormalized_image.size[::-1]])
-    results = processor.post_process_object_detection(
-    outputs=outputs, threshold=0.2, target_sizes=target_sizes
-)   
+    files = {'file': (image_bytes)}
+    # print("donee")
+    results = requests.post(constants.config["paligemma_server"], files = files, params = {"objects": objects})
+    # print("dine")
+    results = results.json()
+    results = results['image']
     print("[green]Prediction done.")
-    results = results[0]
-    scores, labels, boxes = results["scores"], results["labels"], results["boxes"]
-    image_x, image_y = unnormalized_image.size
+    # results = results[0]
+    # scores, labels, boxes = results["scores"], results["labels"], results["boxes"]
+    labels = []
+    boxes = []
+    for obj in results:
+        labels.append(obj['object'])
+        boxes.append(obj['location'])
+    # print(type(image))
+    image_x, image_y, _ = image.shape
     # plot image 
     # print(boxes)
     # print("[green]Plotting image with bounding boxes.")
     fig, ax = plt.subplots()
-    ax.imshow(unnormalized_image)
+    ax.imshow(image)
     plt.yticks(range(0, 800, 20))
     # Draw bounding boxes
     for box in boxes:
-        xmin, ymin, xmax, ymax = box.tolist()
+        ymin, xmin, ymax, xmax = box
         rect = plt.Rectangle((xmin, ymin), xmax - xmin, ymax - ymin, fill=False, edgecolor='red', linewidth=2)
         ax.add_patch(rect)
 
@@ -98,12 +93,12 @@ def detect_objects(objects=[]):
     plt.close(fig)
     output = []
     # print(image_x, image_y)
-    for i in range(len(scores)):
+    for i in range(len(labels)):
         output.append({
-            "object": objects[labels[i]],
+            "object": labels[i],
             "location": {
-                "x": round(1280 * ((boxes[i][0] + (boxes[i][2] - boxes[i][0]) / 2) / image_x).item()),
-                "y": round(720 * (((boxes[i][1] +    ((boxes[i][3] - boxes[i][1]) / 2))) / 540).item())
+                "x": ((boxes[i][1] + boxes[i][3]) / 2),
+                "y": ((boxes[i][0] + boxes[i][2]) / 2)
             }
         })
     return output
