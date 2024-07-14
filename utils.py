@@ -14,8 +14,8 @@ from robots import *
 import matplotlib.pyplot as plt
 import time
 import cv2
-# processor = AutoProcessor.from_pretrained("google/owlv2-base-patch16-ensemble")
-# model = Owlv2ForObjectDetection.from_pretrained("google/owlv2-base-patch16-ensemble")
+
+# contains utils documentation
 
 def say(text):
     """

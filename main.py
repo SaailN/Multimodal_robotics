@@ -17,14 +17,13 @@ FORMAT = pyaudio.paInt16
 CHANNELS = 1 if sys.platform == 'darwin' else 2
 RATE = 16000
 CHUNK = 1024
-
 p = pyaudio.PyAudio()
 stream = p.open(format=FORMAT, channels=CHANNELS, rate=RATE, input=True)
-
 model = whisper.load_model("small")
 
+# Language Model Program Class
 class LMP:
-    def __init__(self, config):
+    def __init__(self, config): # initialize with the class
         robot_doc = """"""
         for api in config["robot_apis"]:
             robot_doc += eval(api).__doc__
@@ -38,14 +37,14 @@ class LMP:
         self.suffix = config["suffix"]
         self.config = config
 
-    def get_api_docs(self):
+    def get_api_docs(self): # returns robots and utils documentation
         return_val = api_docs.substitute(
             {"robot_doc": self.robot_doc, "utils_doc": self.utils_doc}
         )
         return return_val
 
    
-    def get_prompt(self, task):
+    def get_prompt(self, task): # returns the prompt for the task and writes it to a file
 
         prompt = llm_prompt_full.substitute(
             {
@@ -68,7 +67,7 @@ class LMP:
 
 
 def main():
-    console = Console()
+    console = Console() # initialize console for rich output
 
     console.print("[yellow]Initializing LLM API. [/yellow]")
     llm_apis.setup_llm_api()
@@ -96,7 +95,7 @@ def main():
 
     # task = model.transcribe('output.wav')["text"]
     # console.print("[yellow]Task: [/yellow]" + task)
-    task = console.input("[yellow]Enter Task:")
+    task = console.input("[yellow]Enter Task:") # text input for task
     prompt = lmp.get_prompt(task)
 
     console.print("[green]Prompt generated successfully. [/green]")
@@ -107,7 +106,7 @@ def main():
 
     console.print("[yellow]Printing code. [/yellow]")
     console.print(code)
-    exec(code)
+    exec(code) # execute code
 
 
 if __name__ == "__main__":

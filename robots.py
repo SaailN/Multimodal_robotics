@@ -1,7 +1,9 @@
 import requests
 import constants 
 from rich import print
-
+ 
+ # robot APIs 
+ 
 def pick_object(x, y, object) -> bool:
     """
     Name: pick_object

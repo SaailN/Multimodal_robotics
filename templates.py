@@ -1,5 +1,5 @@
 from string import Template
-
+# contains the templates for creating the prompt
 api_docs = Template(
     """
 Robot APIs:

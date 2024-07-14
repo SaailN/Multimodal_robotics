@@ -1,2 +1,6 @@
+/__pycache__
+prompt.txt
+.env
+output.py
 venv/
-__pycache__/
+dmp/

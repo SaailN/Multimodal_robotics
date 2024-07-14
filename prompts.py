@@ -1,3 +1,5 @@
+# This file contains the tempalate text which correspond to different configurations in the constants.py file
+
 def get_camera_prompt(view):
     return (
         "The camera may not see the entire scene at once."
@@ -21,6 +23,8 @@ def get_imports_prompt(imports):
 def get_code_output_prompt(code_output):
     return "Code output is required." if code_output else "Code output is not required."
 
+
+# sample task and response for one shot learning
 
 recorded_task = "Pick the orange from the bedroom and place in the red basket in the kitchen"
 

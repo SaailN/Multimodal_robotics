@@ -3,12 +3,12 @@ import google.generativeai as genai
 from dotenv import load_dotenv
 
 
-def setup_llm_api():
+def setup_llm_api(): # setup Gemini API
     load_dotenv()
     genai.configure(api_key=os.environ["API_KEY"])
 
 
-def generate_llm_response(prompt, write=""):
+def generate_llm_response(prompt, write=""): # generate response from Gemini API
     model = genai.GenerativeModel("gemini-1.5-pro")
     response = model.generate_content(prompt)
     code = response.candidates[0].content.parts[0].text
